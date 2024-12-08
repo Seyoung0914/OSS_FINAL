@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const ShowList = ({ cart = [], addToCart = () => {} }) => {
+const ShowList = ({ cart = [], addToCart = () => {}, availableBooks = [] }) => {
   const [books, setBooks] = useState([]);
   const [filteredBooks, setFilteredBooks] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [filterType, setFilterType] = useState("TITLE");
   const [sortType, setSortType] = useState("");
   const [languageFilter, setLanguageFilter] = useState("ALL");
-  const [showAvailableOnly, setShowAvailableOnly] = useState(false);
+  const [showAvailableOnly, setShowAvailableOnly] = useState(false); // 대여 가능 도서만 보기
   const [currentPage, setCurrentPage] = useState(1);
   const [currentPageGroup, setCurrentPageGroup] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -70,22 +70,26 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
 
     let updatedBooks = books;
 
+    // 검색어 필터
     if (searchKeyword) {
       updatedBooks = updatedBooks.filter((book) =>
         book[filterType]?.toLowerCase().includes(searchKeyword.toLowerCase())
       );
     }
 
+    // 대여 가능 도서만 보기 필터
     if (showAvailableOnly) {
       updatedBooks = updatedBooks.filter(
         (book) => book.AVAILABLE === "대여 가능"
       );
     }
 
+    // 언어 필터
     if (languageFilter !== "ALL") {
       updatedBooks = updatedBooks.filter((book) => book.LANG === languageFilter);
     }
 
+    // 정렬 처리
     if (sortType === "TITLE_ASC") {
       updatedBooks = updatedBooks.sort((a, b) =>
         a.TITLE.localeCompare(b.TITLE, "ko", { sensitivity: "base" })
@@ -219,7 +223,7 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
                 alignItems: "center",
               }}
             >
-                 <div style={{ marginBottom: '10px' }}>
+              <div style={{ marginBottom: '10px' }}>
                 <button
                   className="btn btn-warning"
                   onClick={() => {

@@ -7,12 +7,20 @@ import RentalList from './Pages/RentalList.js';
 
 const Router = () => {
   const [cart, setCart] = useState([]); // 장바구니 상태
-  const [rentalList, setRentalList] = useState([]); // 대여 목록 상태 (수정 부분)
+  const [rentalList, setRentalList] = useState([]); // 대여 목록 상태
+  const [availableBooks, setAvailableBooks] = useState([]); // 대여 가능 도서 상태 관리
 
   // 장바구니에 도서 추가하는 함수
   const addToCart = (book) => {
     if (!cart.some((item) => item.CTRLNO === book.CTRLNO)) {
       setCart([...cart, book]);
+      
+      // 도서 상태 변경: '대여 가능' -> '대여 중'
+      setAvailableBooks(prevBooks =>
+        prevBooks.map(item =>
+          item.CTRLNO === book.CTRLNO ? { ...item, AVAILABLE: "대여 중" } : item
+        )
+      );
     } else {
       alert('이 도서는 이미 장바구니에 추가되어 있습니다.');
     }
@@ -23,6 +31,19 @@ const Router = () => {
     setCart(cart.filter((item) => item.CTRLNO !== ctrlNo));
   };
 
+  // 대여 리스트에서 반납하기
+  const handleReturnBook = (book) => {
+    // 반납 시, 대여 중인 도서를 '대여 가능'으로 변경
+    setRentalList(rentalList.filter((item) => item.CTRLNO !== book.CTRLNO));
+    
+    // 상태 업데이트: '대여 중' -> '대여 가능'
+    setAvailableBooks(prevBooks =>
+      prevBooks.map(item =>
+        item.CTRLNO === book.CTRLNO ? { ...item, AVAILABLE: "대여 가능" } : item
+      )
+    );
+  };
+
   // 장바구니 전체 대여 완료
   const checkout = () => {
     if (cart.length === 0) {
@@ -30,27 +51,28 @@ const Router = () => {
       return;
     }
 
-    try {
-      // 🆕 장바구니의 모든 도서를 대여 목록에 추가
-      setRentalList([...rentalList, ...cart]);
-
-      alert('도서가 대여되었습니다.');
-      setCart([]); // 장바구니 초기화
-    } catch (error) {
-      console.error('대여 실패:', error);
-      alert('대여에 실패했습니다.');
-    }
+    // 장바구니의 모든 도서를 대여 목록에 추가하고, 해당 도서를 '대여 중'으로 변경
+    setRentalList([...rentalList, ...cart]);
+    setCart([]); // 장바구니 초기화
   };
 
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Navigate to="/home" replace />} />
-        <Route path="/home" element={<ShowList cart={cart} addToCart={addToCart} />} />
-        <Route path="/cart" element={<CartList cart={cart} removeFromCart={removeFromCart} checkout={checkout} />} />
+        <Route
+          path="/home"
+          element={<ShowList cart={cart} addToCart={addToCart} availableBooks={availableBooks} />}
+        />
+        <Route
+          path="/cart"
+          element={<CartList cart={cart} removeFromCart={removeFromCart} checkout={checkout} />}
+        />
         <Route path="/book/:CTRLNO" element={<Detail />} />
-        {/* 📘 RentalList에 대여 목록 상태 전달 */}
-        <Route path="/rental" element={<RentalList rentalList={rentalList} />} />
+        <Route
+          path="/rental"
+          element={<RentalList rentalList={rentalList} handleReturnBook={handleReturnBook} />}
+        />
       </Routes>
     </BrowserRouter>
   );
