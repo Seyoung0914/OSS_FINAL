@@ -57,7 +57,7 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
         setLoading(false);
       } catch (err) {
         console.error("Error fetching data:", err);
-        setError("데이터를 가져오는 중 오류가 발생했습니다.");
+        setError("데이터를 가져오는데 실패했습니다. 페이지를 다시 열어주세요.");
         setLoading(false);
       }
     };
