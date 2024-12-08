@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ShowList from './Pages/ShowList.js';
 import CartList from './Pages/CartList.js';
@@ -8,13 +8,33 @@ import RentalList from './Pages/RentalList.js';
 const Router = () => {
   const [cart, setCart] = useState([]); // 장바구니 상태
   const [rentalList, setRentalList] = useState([]); // 대여 목록 상태
-  const [availableBooks, setAvailableBooks] = useState([]); // 대여 가능 도서 상태 관리
+  const [availableBooks, setAvailableBooks] = useState([]); // 대여 가능 도서 상태
+
+  // API에서 도서 목록을 받아오는 함수
+  useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        const response = await fetch('/api/books'); // 실제 API 엔드포인트로 변경해야 함
+        const data = await response.json();
+
+        // API로 받은 데이터를 대여 가능 도서 목록으로 설정
+        setAvailableBooks(data.map(book => ({
+          ...book,
+          AVAILABLE: "대여 가능" // 대여 상태는 클라이언트에서 관리
+        })));
+      } catch (error) {
+        console.error('도서 목록을 가져오는 중 오류가 발생했습니다:', error);
+      }
+    };
+
+    fetchBooks();
+  }, []); // 컴포넌트 마운트 시 한 번만 실행
 
   // 장바구니에 도서 추가하는 함수
   const addToCart = (book) => {
     if (!cart.some((item) => item.CTRLNO === book.CTRLNO)) {
       setCart([...cart, book]);
-      
+
       // 도서 상태 변경: '대여 가능' -> '대여 중'
       setAvailableBooks(prevBooks =>
         prevBooks.map(item =>
@@ -35,7 +55,7 @@ const Router = () => {
   const handleReturnBook = (book) => {
     // 반납 시, 대여 중인 도서를 '대여 가능'으로 변경
     setRentalList(rentalList.filter((item) => item.CTRLNO !== book.CTRLNO));
-    
+
     // 상태 업데이트: '대여 중' -> '대여 가능'
     setAvailableBooks(prevBooks =>
       prevBooks.map(item =>
