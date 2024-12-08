@@ -6,9 +6,9 @@ const RentalList = ({ rentalList = [], removeFromRentalList = () => {}, setAvail
 
   const handleReturn = (book) => {
     // 반납 시, 대여 목록에서 제거
-    removeFromRentalList(book.CTRLNO);
+    removeFromRentalList(book.CTRLNO); // 대여 목록에서 해당 도서를 제거하는 함수
 
-    // 상태 업데이트: '대여 중' -> '대여 가능'
+    // 대여 가능 도서 목록에서 해당 도서를 '대여 가능' 상태로 변경
     setAvailableBooks(prevBooks =>
       prevBooks.map(item =>
         item.CTRLNO === book.CTRLNO ? { ...item, AVAILABLE: "대여 가능" } : item
@@ -67,7 +67,7 @@ const RentalList = ({ rentalList = [], removeFromRentalList = () => {}, setAvail
               </span>
               <button
                 className="btn btn-danger"
-                onClick={() => handleReturn(book)}
+                onClick={() => handleReturn(book)} // 반납하기 버튼 클릭 시
                 style={{ marginTop: '10px' }}
               >
                 반납하기

@@ -53,7 +53,7 @@ const Router = () => {
 
   // 대여 리스트에서 반납하기
   const handleReturnBook = (book) => {
-    // 반납 시, 대여 중인 도서를 '대여 가능'으로 변경
+    // 대여 목록에서 해당 도서 제거
     setRentalList(rentalList.filter((item) => item.CTRLNO !== book.CTRLNO));
 
     // 상태 업데이트: '대여 중' -> '대여 가능'
