@@ -1,13 +1,23 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const RentalList = ({ rentalList = [], removeFromRentalList = () => {}, addToCart = () => {} }) => {
+const RentalList = ({ rentalList = [], removeFromRentalList = () => {}, addToCart = () => {}, setAvailableBooks = () => {} }) => {
   const navigate = useNavigate();
 
   const handleReturn = (book) => {
     // 반납 시, 대여 목록에서 제거하고 장바구니에 다시 추가
     removeFromRentalList(book.CTRLNO);
+
+    // 도서 상태 변경: '대여 중' -> '대여 가능'
     addToCart(book);
+
+    // 상태 업데이트: '대여 중' -> '대여 가능'
+    setAvailableBooks(prevBooks =>
+      prevBooks.map(item =>
+        item.CTRLNO === book.CTRLNO ? { ...item, AVAILABLE: "대여 가능" } : item
+      )
+    );
+
     alert(`${book.TITLE} 도서가 반납되었습니다.`);
   };
 
