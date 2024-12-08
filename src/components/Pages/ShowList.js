@@ -176,14 +176,6 @@ const ShowList = ({ cart = [], addToCart = () => {}, availableBooks = [] }) => {
             <option value="kor">한국어</option>
             <option value="eng">영어</option>
           </select>
-          <label style={{ marginLeft: "10px" }}>
-            <input
-              type="checkbox"
-              checked={showAvailableOnly}
-              onChange={(e) => setShowAvailableOnly(e.target.checked)}
-            />
-            대여 가능 도서만 보기
-          </label>
         </div>
         <div>
           <button
@@ -195,6 +187,14 @@ const ShowList = ({ cart = [], addToCart = () => {}, availableBooks = [] }) => {
           </button>
           <button className="btn btn-secondary" onClick={() => navigate("/rental")}>
             대여 리스트 보기
+          </button>
+          {/* 대여 가능 도서만 보기 토글 버튼 */}
+          <button
+            className="btn btn-toggle"
+            onClick={() => setShowAvailableOnly(!showAvailableOnly)}
+            style={{ marginLeft: "10px" }}
+          >
+            {showAvailableOnly ? "모든 도서 보기" : "대여 가능 도서만 보기"}
           </button>
         </div>
       </div>
@@ -228,9 +228,10 @@ const ShowList = ({ cart = [], addToCart = () => {}, availableBooks = [] }) => {
                   className="btn btn-warning"
                   onClick={() => {
                     console.log(`🛒 장바구니에 추가됨: ${book.TITLE}`);
+                    
                     addToCart(book);
                   }}
-                  disabled={cart.some((item) => item.CTRLNO === book.CTRLNO)}
+                  disabled={book.AVAILABLE !== "대여 가능"}
                   style={{ marginRight: '10px' }}
                 >
                   {cart.some((item) => item.CTRLNO === book.CTRLNO) ? '장바구니에 있음' : '장바구니 추가'}
