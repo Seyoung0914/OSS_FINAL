@@ -2,7 +2,7 @@ import axios from "axios";
 
 export default async function handler(req, res) {
     try {
-        const { start = 530001, end = 531000 } = req.query;
+        const { start = 530001, end = 530700 } = req.query;
         const startIndex = parseInt(start, 10);
         const endIndex = parseInt(end, 10);
         if (isNaN(startIndex) || isNaN(endIndex) || startIndex <= 0 || endIndex <= 0) {
