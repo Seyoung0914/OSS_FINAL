@@ -176,6 +176,14 @@ const ShowList = ({ cart = [], addToCart = () => {}, availableBooks = [] }) => {
             <option value="kor">한국어</option>
             <option value="eng">영어</option>
           </select>
+          <label style={{ marginLeft: "10px" }}>
+            <input
+              type="checkbox"
+              checked={showAvailableOnly}
+              onChange={(e) => setShowAvailableOnly(e.target.checked)}
+            />
+            대여 가능 도서만 보기
+          </label>
         </div>
         <div>
           <button
@@ -187,14 +195,6 @@ const ShowList = ({ cart = [], addToCart = () => {}, availableBooks = [] }) => {
           </button>
           <button className="btn btn-secondary" onClick={() => navigate("/rental")}>
             대여 리스트 보기
-          </button>
-          {/* 대여 가능 도서만 보기 토글 버튼 */}
-          <button
-            className="btn btn-toggle"
-            onClick={() => setShowAvailableOnly(!showAvailableOnly)}
-            style={{ marginLeft: "10px" }}
-          >
-            {showAvailableOnly ? "모든 도서 보기" : "대여 가능 도서만 보기"}
           </button>
         </div>
       </div>
