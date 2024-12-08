@@ -219,16 +219,17 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
                 alignItems: "center",
               }}
             >
-              <div style={{ marginBottom: "10px" }}>
+                 <div style={{ marginBottom: '10px' }}>
                 <button
                   className="btn btn-warning"
-                  onClick={() => addToCart(book)}
+                  onClick={() => {
+                    console.log(`🛒 장바구니에 추가됨: ${book.TITLE}`);
+                    addToCart(book);
+                  }}
                   disabled={cart.some((item) => item.CTRLNO === book.CTRLNO)}
-                  style={{ marginRight: "10px" }}
+                  style={{ marginRight: '10px' }}
                 >
-                  {cart.some((item) => item.CTRLNO === book.CTRLNO)
-                    ? "장바구니에 있음"
-                    : "장바구니 추가"}
+                  {cart.some((item) => item.CTRLNO === book.CTRLNO) ? '장바구니에 있음' : '장바구니 추가'}
                 </button>
                 <button
                   className="btn btn-info"
