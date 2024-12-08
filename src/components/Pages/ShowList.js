@@ -228,10 +228,9 @@ const ShowList = ({ cart = [], addToCart = () => {}, availableBooks = [] }) => {
                   className="btn btn-warning"
                   onClick={() => {
                     console.log(`🛒 장바구니에 추가됨: ${book.TITLE}`);
-                    
                     addToCart(book);
                   }}
-                  disabled={book.AVAILABLE !== "대여 가능"}
+                  disabled={cart.some((item) => item.CTRLNO === book.CTRLNO)}
                   style={{ marginRight: '10px' }}
                 >
                   {cart.some((item) => item.CTRLNO === book.CTRLNO) ? '장바구니에 있음' : '장바구니 추가'}
