@@ -56,9 +56,7 @@ const ShowList = ({ cart = [], addToCart = () => { } }) => {
 
       // 2️⃣ 대여 가능 여부 필터
       if (showAvailableOnly) {
-        updatedBooks = updatedBooks.filter(
-          (book) => book.loan_available === "대여 가능"
-        );
+        updatedBooks = updatedBooks.filter((book) => book.loan_available === "대여 가능");
       }
 
       // 3️⃣ 언어 필터

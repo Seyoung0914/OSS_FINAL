@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const CartList = ({ cart = [], removeFromCart = () => {}, checkout = () => {} }) => {
+const CartList = ({ cart = [], removeFromCart = () => { }, checkout = () => { } }) => {
   const navigate = useNavigate();
 
   const handleRemove = (control_number) => {
@@ -81,9 +81,15 @@ const CartList = ({ cart = [], removeFromCart = () => {}, checkout = () => {} })
         <button className="btn btn-secondary" onClick={() => navigate('/home')} style={{ marginRight: '10px' }}>
           도서 리스트로 돌아가기
         </button>
-        <button className="btn btn-success" onClick={handleCheckout}>
+        // CartList.js
+
+        <button
+          className="btn btn-success"
+          onClick={checkout}
+        >
           대여하기
         </button>
+
       </div>
     </div>
   );
