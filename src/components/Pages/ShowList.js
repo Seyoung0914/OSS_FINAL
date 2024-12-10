@@ -23,6 +23,7 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
     const fetchBooks = async () => {
       try {
         setLoading(true);
+        setError(null);
         const response = await axios.get(`${apiUrl}?limit=100`);
         const bookArray = response.data.map((book) => ({
           ...book,
@@ -33,7 +34,8 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
         setFilteredBooks(bookArray);
         setLoading(false);
       } catch (err) {
-        setError("데이터를 가져오는데 실패했습니다.");
+        console.error("Error fetching data:", err);
+        setError("데이터를 가져오는데 실패했습니다. 페이지를 다시 열어주세요.");
         setLoading(false);
       }
     };
@@ -42,34 +44,53 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
   }, []);
 
   useEffect(() => {
-    let updatedBooks = [...books];
-
-    if (searchKeyword) {
-      updatedBooks = updatedBooks.filter((book) =>
-        book[filterType]?.toLowerCase().includes(searchKeyword.toLowerCase())
-      );
-    }
-
-    if (showAvailableOnly) {
-      updatedBooks = updatedBooks.filter((book) => book.loan_available === "대여 가능");
-    }
-
-    if (languageFilter !== "ALL") {
-      updatedBooks = updatedBooks.filter((book) => book.language === languageFilter);
-    }
-
-    if (sortType === "title_asc") {
-      updatedBooks.sort((a, b) => a.title.localeCompare(b.title, "ko", { sensitivity: "base" }));
-    } else if (sortType === "control_number_asc") {
-      updatedBooks.sort((a, b) => parseInt(a.control_number, 10) - parseInt(b.control_number, 10));
-    } else if (sortType === "publication_year_asc") {
-      updatedBooks.sort((a, b) => parseInt(a.publication_year, 10) - parseInt(b.publication_year, 10));
-    }
-
-    setFilteredBooks(updatedBooks);
-    setCurrentPage(1);
+    const applyFiltersAndSort = () => {
+      let updatedBooks = [...books]; // 불변성 유지
+  
+      // 1️⃣ 검색어 필터
+      if (searchKeyword) {
+        updatedBooks = updatedBooks.filter((book) =>
+          book[filterType]?.toLowerCase().includes(searchKeyword.toLowerCase())
+        );
+      }
+  
+      // 2️⃣ 대여 가능 여부 필터
+      if (showAvailableOnly) {
+        updatedBooks = updatedBooks.filter(
+          (book) => book.loan_available === "대여 가능"
+        );
+      }
+  
+      // 3️⃣ 언어 필터
+      if (languageFilter !== "ALL") {
+        updatedBooks = updatedBooks.filter(
+          (book) => book.language === languageFilter
+        );
+      }
+  
+      // 4️⃣ 정렬 (불변성 유지)
+      if (sortType === "title_asc") {
+        updatedBooks = [...updatedBooks].sort((a, b) =>
+          a.title.localeCompare(b.title, "ko", { sensitivity: "base" })
+        );
+      } else if (sortType === "control_number_asc") {
+        updatedBooks = [...updatedBooks].sort((a, b) =>
+          parseInt(a.control_number, 10) - parseInt(b.control_number, 10)
+        );
+      } else if (sortType === "publication_year_asc") {
+        updatedBooks = [...updatedBooks].sort(
+          (a, b) => Number(a.publication_year) - Number(b.publication_year)
+        );
+      }
+  
+      return updatedBooks;
+    };
+  
+    const updatedBooks = applyFiltersAndSort();
+    setFilteredBooks(updatedBooks); // 필터된 결과로 상태 업데이트
+    setCurrentPage(1); // 페이지 초기화
   }, [books, searchKeyword, filterType, showAvailableOnly, languageFilter, sortType]);
-
+  
   const displayedBooks = filteredBooks.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -78,6 +99,9 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
   const totalPages = Math.ceil(filteredBooks.length / itemsPerPage);
 
   const changePage = (pageNumber) => setCurrentPage(pageNumber);
+
+  const startPage = 1;
+  const endPage = totalPages;
 
   if (loading) return <p>데이터를 불러오는 중입니다...</p>;
   if (error) return <p>오류 발생: {error}</p>;
