@@ -11,7 +11,7 @@ const Router = () => {
 
   // 장바구니에 도서 추가하는 함수
   const addToCart = (book) => {
-    if (!cart.some((item) => item.CTRLNO === book.CTRLNO)) {
+    if (!cart.some((item) => item.control_number === book.control_number)) {
       setCart([...cart, book]);
     } else {
       alert("이 도서는 이미 장바구니에 추가되어 있습니다.");
@@ -19,13 +19,13 @@ const Router = () => {
   };
 
   // 장바구니에서 도서 삭제하는 함수
-  const removeFromCart = (ctrlNo) => {
-    setCart(cart.filter((item) => item.CTRLNO !== ctrlNo));
+  const removeFromCart = (control_number) => {
+    setCart(cart.filter((item) => item.control_number !== control_number));
   };
 
   // 대여 리스트에서 반납하기
   const handleReturnBook = (book) => {
-    setRentalList(rentalList.filter((item) => item.CTRLNO !== book.CTRLNO));
+    setRentalList(rentalList.filter((item) => item.control_number !== book.control_number));
   };
 
   // 장바구니 전체 대여 완료
@@ -51,7 +51,7 @@ const Router = () => {
           element={<CartList cart={cart} removeFromCart={removeFromCart} checkout={checkout} />} 
         />
         <Route 
-          path="/book/:CTRLNO" 
+          path="/book/:control_number" // 📘 control_number로 경로 수정
           element={<Detail cart={cart} addToCart={addToCart} />} 
         />
         <Route 
