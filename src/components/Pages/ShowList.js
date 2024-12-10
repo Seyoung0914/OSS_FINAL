@@ -6,50 +6,28 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
   const [books, setBooks] = useState([]);
   const [filteredBooks, setFilteredBooks] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [filterType, setFilterType] = useState("TITLE");
+  const [filterType, setFilterType] = useState("title");
   const [sortType, setSortType] = useState("");
   const [languageFilter, setLanguageFilter] = useState("ALL");
   const [showAvailableOnly, setShowAvailableOnly] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [currentPageGroup, setCurrentPageGroup] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
-  const itemsPerPage = 20;
-  const pagesPerGroup = 10;
+  const itemsPerPage = 10; 
+
+  const apiUrl = "https://67582f9d60576a194d0f3f84.mockapi.io/book";
 
   useEffect(() => {
     const fetchBooks = async () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await axios.get("/api/books");
-        const xmlData = response.data;
-
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(xmlData, "application/xml");
-
-        const resultCode = xmlDoc.getElementsByTagName("CODE")[0]?.textContent;
-        if (resultCode !== "INFO-000") {
-          throw new Error(
-            xmlDoc.getElementsByTagName("MESSAGE")[0]?.textContent || "API Error"
-          );
-        }
-
-        const rows = xmlDoc.getElementsByTagName("row");
-        const bookArray = Array.from(rows).map((row) => ({
-          CTRLNO: row.getElementsByTagName("CTRLNO")[0]?.textContent || "N/A",
-          TITLE: row.getElementsByTagName("TITLE")[0]?.textContent || "제목 없음",
-          AUTHOR: row.getElementsByTagName("AUTHOR")[0]?.textContent || "저자 없음",
-          PUBLER: row.getElementsByTagName("PUBLER")[0]?.textContent || "출판사 없음",
-          PUBLER_YEAR:
-            parseInt(
-              row.getElementsByTagName("PUBLER_YEAR")[0]?.textContent || "0",
-              10
-            ),
-          AVAILABLE: "대여 가능",
-          LANG: row.getElementsByTagName("LANG")[0]?.textContent || "N/A",
+        const response = await axios.get(`${apiUrl}?limit=100`);
+        const bookArray = response.data.map((book) => ({
+          ...book,
+          loan_available: book.loan_available === "Y" ? "대여 가능" : "대여 불가",
         }));
 
         setBooks(bookArray);
@@ -78,24 +56,24 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
 
     if (showAvailableOnly) {
       updatedBooks = updatedBooks.filter(
-        (book) => book.AVAILABLE === "대여 가능"
+        (book) => book.loan_available === "대여 가능"
       );
     }
 
     if (languageFilter !== "ALL") {
-      updatedBooks = updatedBooks.filter((book) => book.LANG === languageFilter);
+      updatedBooks = updatedBooks.filter((book) => book.language === languageFilter);
     }
 
-    if (sortType === "TITLE_ASC") {
+    if (sortType === "title_asc") {
       updatedBooks = updatedBooks.sort((a, b) =>
-        a.TITLE.localeCompare(b.TITLE, "ko", { sensitivity: "base" })
+        a.title.localeCompare(b.title, "ko", { sensitivity: "base" })
       );
-    } else if (sortType === "CTRLNO_ASC") {
+    } else if (sortType === "control_number_asc") {
       updatedBooks = updatedBooks.sort((a, b) =>
-        a.CTRLNO.localeCompare(b.CTRLNO, "ko", { sensitivity: "base" })
+        a.control_number.localeCompare(b.control_number, "ko", { sensitivity: "base" })
       );
-    } else if (sortType === "PUBLER_YEAR_ASC") {
-      updatedBooks = updatedBooks.sort((a, b) => a.PUBLER_YEAR - b.PUBLER_YEAR);
+    } else if (sortType === "publication_year_asc") {
+      updatedBooks = updatedBooks.sort((a, b) => a.publication_year - b.publication_year);
     }
 
     setFilteredBooks([...updatedBooks]);
@@ -107,22 +85,11 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
   );
 
   const totalPages = Math.ceil(filteredBooks.length / itemsPerPage);
-  const totalGroups = Math.ceil(totalPages / pagesPerGroup);
 
   const changePage = (pageNumber) => setCurrentPage(pageNumber);
 
-  const changePageGroup = (direction) => {
-    if (direction === "next" && currentPageGroup < totalGroups - 1) {
-      setCurrentPageGroup(currentPageGroup + 1);
-      setCurrentPage(currentPageGroup * pagesPerGroup + 1 + pagesPerGroup);
-    } else if (direction === "prev" && currentPageGroup > 0) {
-      setCurrentPageGroup(currentPageGroup - 1);
-      setCurrentPage(currentPageGroup * pagesPerGroup + 1 - pagesPerGroup);
-    }
-  };
-
-  const startPage = currentPageGroup * pagesPerGroup + 1;
-  const endPage = Math.min(startPage + pagesPerGroup - 1, totalPages);
+  const startPage = 1;
+  const endPage = totalPages;
 
   if (loading) return <p>데이터를 불러오는 중입니다...</p>;
   if (error) return <p>오류 발생: {error}</p>;
@@ -149,9 +116,9 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
             onChange={(e) => setFilterType(e.target.value)}
             value={filterType}
           >
-            <option value="TITLE">제목</option>
-            <option value="AUTHOR">저자</option>
-            <option value="PUBLER">출판사</option>
+            <option value="title">제목</option>
+            <option value="author">저자</option>
+            <option value="publisher">출판사</option>
           </select>
           <select
             onChange={(e) => setSortType(e.target.value)}
@@ -159,9 +126,9 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
             style={{ marginLeft: "10px" }}
           >
             <option value="">정렬 없음</option>
-            <option value="TITLE_ASC">책 제목 가나다순</option>
-            <option value="CTRLNO_ASC">자료 코드순</option>
-            <option value="PUBLER_YEAR_ASC">출판 연도순</option>
+            <option value="title_asc">책 제목 가나다순</option>
+            <option value="control_number_asc">자료 코드순</option>
+            <option value="publication_year_asc">출판 연도순</option>
           </select>
           <select
             onChange={(e) => setLanguageFilter(e.target.value)}
@@ -169,8 +136,8 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
             style={{ marginLeft: "10px" }}
           >
             <option value="ALL">모든 언어</option>
-            <option value="kor">한국어</option>
-            <option value="eng">영어</option>
+            <option value="한국어">한국어</option>
+            <option value="영어">영어</option>
           </select>
           <label style={{ marginLeft: "10px" }}>
             <input
@@ -181,24 +148,12 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
             대여 가능 도서만 보기
           </label>
         </div>
-        <div>
-          <button
-            className="btn btn-primary"
-            onClick={() => navigate("/cart")}
-            style={{ marginRight: "10px" }}
-          >
-            장바구니 보기
-          </button>
-          <button className="btn btn-secondary" onClick={() => navigate("/rental")}>
-            대여 리스트 보기
-          </button>
-        </div>
       </div>
 
       <div id="data-list" style={{ marginTop: "20px" }}>
         {displayedBooks.map((book) => (
           <div
-            key={book.CTRLNO}
+            key={book.control_number}
             className="book-item"
             style={{
               display: "flex",
@@ -209,8 +164,8 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
             }}
           >
             <div>
-              <strong>{book.TITLE}</strong>
-              <p>{`${book.AUTHOR} / ${book.PUBLER}`}</p>
+              <strong>{book.title}</strong>
+              <p>{`${book.author} / ${book.publisher}`}</p>
             </div>
             <div
               style={{
@@ -219,31 +174,28 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
                 alignItems: "center",
               }}
             >
-                 <div style={{ marginBottom: '10px' }}>
+              <div style={{ marginBottom: '10px' }}>
                 <button
                   className="btn btn-warning"
-                  onClick={() => {
-                    console.log(`🛒 장바구니에 추가됨: ${book.TITLE}`);
-                    addToCart(book);
-                  }}
-                  disabled={cart.some((item) => item.CTRLNO === book.CTRLNO)}
+                  onClick={() => addToCart(book)}
+                  disabled={cart.some((item) => item.control_number === book.control_number)}
                   style={{ marginRight: '10px' }}
                 >
-                  {cart.some((item) => item.CTRLNO === book.CTRLNO) ? '장바구니에 있음' : '장바구니 추가'}
+                  {cart.some((item) => item.control_number === book.control_number) ? '장바구니에 있음' : '장바구니 추가'}
                 </button>
                 <button
                   className="btn btn-info"
-                  onClick={() => navigate(`/book/${book.CTRLNO}`)}
+                  onClick={() => navigate(`/book/${book.control_number}`)}
                 >
                   상세보기
                 </button>
               </div>
               <span
                 style={{
-                  color: book.AVAILABLE === "대여 가능" ? "green" : "red",
+                  color: book.loan_available === "대여 가능" ? "green" : "red",
                 }}
               >
-                {book.AVAILABLE}
+                {book.loan_available}
               </span>
             </div>
           </div>
@@ -251,16 +203,8 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
       </div>
 
       <div className="pagination">
-        <button
-          className="page-btn"
-          onClick={() => changePageGroup("prev")}
-          disabled={currentPageGroup === 0}
-          style={{ marginRight: "5px" }}
-        >
-          이전
-        </button>
         {Array.from(
-          { length: endPage - startPage + 1 },
+          { length: endPage },
           (_, i) => startPage + i
         ).map((pageNumber) => (
           <button
@@ -272,14 +216,6 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
             {pageNumber}
           </button>
         ))}
-        <button
-          className="page-btn"
-          onClick={() => changePageGroup("next")}
-          disabled={currentPageGroup >= totalGroups - 1}
-          style={{ marginRight: "5px" }}
-        >
-          다음
-        </button>
       </div>
     </div>
   );
