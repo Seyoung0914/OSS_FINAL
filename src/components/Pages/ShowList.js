@@ -49,7 +49,7 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
     // 1️⃣ 책 배열을 복사하여 초기화
     let updatedBooks = [...books];
   
-    // 2️⃣ 검색어 필터
+    // 2️⃣ 검색어 필터 (대소문자를 구분하지 않음)
     if (searchKeyword) {
       updatedBooks = updatedBooks.filter((book) =>
         book[filterType]?.toLowerCase().includes(searchKeyword.toLowerCase())
@@ -68,32 +68,29 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
   
     // 5️⃣ 정렬
     if (sortType === "title_asc") {
-      updatedBooks = updatedBooks.sort((a, b) => {
-        // 한국어와 영어 도서를 구분하여 정렬
-        if (a.language === "영어" && b.language === "영어") {
-          return a.title.localeCompare(b.title, "en", { sensitivity: "base" });
-        }
-        if (a.language === "한국어" && b.language === "한국어") {
-          return a.title.localeCompare(b.title, "ko", { sensitivity: "base" });
-        }
-        // 한국어는 먼저, 영어는 나중에
-        if (a.language === "한국어") return -1;
-        if (b.language === "한국어") return 1;
-        return a.title.localeCompare(b.title, "ko", { sensitivity: "base" });
-      });
-    } else if (sortType === "control_number_asc") {
+      // 한국어 도서와 영어 도서를 분리하여 정렬
+      const koreanBooks = updatedBooks.filter((book) => book.language === '한국어');
+      const englishBooks = updatedBooks.filter((book) => book.language === '영어');
+  
+      koreanBooks.sort((a, b) => a.title.localeCompare(b.title, 'ko', { sensitivity: 'base' }));
+      englishBooks.sort((a, b) => a.title.localeCompare(b.title, 'en', { sensitivity: 'base' }));
+  
+      // 한국어 도서 + 영어 도서를 하나의 배열로 병합
+      updatedBooks = [...koreanBooks, ...englishBooks];
+    } 
+    else if (sortType === "control_number_asc") {
       updatedBooks = updatedBooks.sort((a, b) =>
         parseInt(a.control_number, 10) - parseInt(b.control_number, 10)
       );
-    } else if (sortType === "publication_year_asc") {
+    } 
+    else if (sortType === "publication_year_asc") {
       updatedBooks = updatedBooks.sort((a, b) => a.publication_year - b.publication_year);
     }
   
     // 6️⃣ 필터링 및 정렬된 결과를 상태로 업데이트
     setFilteredBooks(updatedBooks);
-  }, [books, searchKeyword, filterType, showAvailableOnly, languageFilter, sortType]); // 필터링, 정렬, books 변경 시마다 실행
+  }, [books, searchKeyword, filterType, showAvailableOnly, languageFilter, sortType]); 
   
-
   const displayedBooks = filteredBooks.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
