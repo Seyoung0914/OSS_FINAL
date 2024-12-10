@@ -15,7 +15,7 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
-  const itemsPerPage = 10;
+  const itemsPerPage = 10; 
 
   const apiUrl = "https://67582f9d60576a194d0f3f84.mockapi.io/book";
 
@@ -43,30 +43,27 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
     fetchBooks();
   }, []);
 
-  // 정렬 및 필터링이 변경될 때마다 filteredBooks 상태 업데이트, 그리고 1페이지로 리셋
   useEffect(() => {
+    if (!books || books.length === 0) return;
+
     let updatedBooks = books;
 
-    // 검색 필터 적용
     if (searchKeyword) {
       updatedBooks = updatedBooks.filter((book) =>
         book[filterType]?.toLowerCase().includes(searchKeyword.toLowerCase())
       );
     }
 
-    // 대여 가능 도서만 보기 필터 적용
     if (showAvailableOnly) {
       updatedBooks = updatedBooks.filter(
         (book) => book.loan_available === "대여 가능"
       );
     }
 
-    // 언어 필터 적용
     if (languageFilter !== "ALL") {
       updatedBooks = updatedBooks.filter((book) => book.language === languageFilter);
     }
 
-    // 정렬 적용
     if (sortType === "title_asc") {
       updatedBooks = updatedBooks.sort((a, b) =>
         a.title.localeCompare(b.title, "ko", { sensitivity: "base" })
@@ -79,18 +76,9 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
       updatedBooks = updatedBooks.sort((a, b) => a.publication_year - b.publication_year);
     }
 
-    setFilteredBooks(updatedBooks);
-    setCurrentPage(1); // 정렬이나 필터링 시 1페이지로 리셋
-  }, [
-    books, 
-    searchKeyword, 
-    filterType, 
-    showAvailableOnly, 
-    languageFilter, 
-    sortType
-  ]);
+    setFilteredBooks([...updatedBooks]);
+  }, [books, searchKeyword, filterType, showAvailableOnly, languageFilter, sortType]);
 
-  // 페이지에 표시할 도서 목록
   const displayedBooks = filteredBooks.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
