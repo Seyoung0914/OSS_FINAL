@@ -46,8 +46,8 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
   useEffect(() => {
     if (!books || books.length === 0) return;
   
-    // 1️⃣ **항상 원본 books 배열을 복사하여 초기화 (이전 filteredBooks 절대 사용 X)**
-    let updatedBooks = [...books]; 
+    // 1️⃣ **항상 books 배열을 복사하여 초기화**
+    let updatedBooks = [...books];
   
     // 2️⃣ **검색어 필터**
     if (searchKeyword) {
@@ -66,19 +66,26 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
       updatedBooks = updatedBooks.filter((book) => book.language === languageFilter);
     }
   
-    // 5️⃣ **정렬 로직 (로케일을 명확히 지정함)**
+    // 5️⃣ **정렬 로직 (한국어와 영어를 따로 정렬 후 병합)**
     if (sortType === "title_asc") {
-      updatedBooks = updatedBooks.sort((a, b) => 
-        a.title.localeCompare(b.title, undefined, { sensitivity: 'base', numeric: true })
-      );
+      // 한국어와 영어로 분리
+      const koreanBooks = updatedBooks.filter((book) => book.language === '한국어');
+      const englishBooks = updatedBooks.filter((book) => book.language === '영어');
+  
+      // 한국어와 영어 각각 정렬
+      koreanBooks.sort((a, b) => a.title.localeCompare(b.title, 'ko', { sensitivity: 'base' }));
+      englishBooks.sort((a, b) => a.title.localeCompare(b.title, 'en', { sensitivity: 'base' }));
+  
+      // 한국어가 먼저, 영어가 나중에 병합
+      updatedBooks = [...koreanBooks, ...englishBooks];
     } 
     else if (sortType === "control_number_asc") {
-      updatedBooks = updatedBooks.sort((a, b) => 
+      updatedBooks = [...updatedBooks].sort((a, b) => 
         parseInt(a.control_number, 10) - parseInt(b.control_number, 10)
       );
     } 
     else if (sortType === "publication_year_asc") {
-      updatedBooks = updatedBooks.sort((a, b) => a.publication_year - b.publication_year);
+      updatedBooks = [...updatedBooks].sort((a, b) => a.publication_year - b.publication_year);
     }
   
     // 6️⃣ **필터링 및 정렬된 결과로 상태 업데이트 (기존 filteredBooks와 같으면 상태 업데이트 하지 않음)**
@@ -87,7 +94,6 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
       return isSame ? prev : updatedBooks;
     });
   }, [books, searchKeyword, filterType, showAvailableOnly, languageFilter, sortType]); 
-
   
   const displayedBooks = filteredBooks.slice(
     (currentPage - 1) * itemsPerPage,
