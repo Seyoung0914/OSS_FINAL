@@ -40,6 +40,13 @@ const RentalList = ({ rentalList = [], returnBook }) => {
             <div>
               <strong>{book.title}</strong>
               <p>{`${book.author} / ${book.publisher}`}</p>
+              <p>
+                {book.loan_available ? (
+                  <span style={{ color: 'green' }}>대여 가능</span>
+                ) : (
+                  <span style={{ color: 'red' }}>대여 중</span>
+                )}
+              </p>
             </div>
             <div
               style={{
@@ -48,13 +55,17 @@ const RentalList = ({ rentalList = [], returnBook }) => {
                 alignItems: 'center',
               }}
             >
-              <button
-                className="btn btn-danger"
-                onClick={() => handleReturn(book.control_number)}
-                style={{ marginTop: '10px' }}
-              >
-                반납하기
-              </button>
+              {book.loan_available ? (
+                <button
+                  className="btn btn-danger"
+                  onClick={() => handleReturn(book.control_number)}
+                  style={{ marginTop: '10px' }}
+                >
+                  반납하기
+                </button>
+              ) : (
+                <p>대여 중</p>
+              )}
             </div>
           </div>
         ))}

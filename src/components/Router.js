@@ -9,13 +9,26 @@ const Router = () => {
   const [cart, setCart] = useState([]); // 장바구니 상태
   const [rentalList, setRentalList] = useState([]); // 대여 목록 상태 (수정 부분)
 
-  const returnBook = (ctrlNo) => {
-    // rentalList에서 해당 도서를 삭제
-    const updatedRentalList = rentalList.filter((book) => book.CTRLNO !== ctrlNo);
+  const returnBook = (control_number) => {
+    // 반납 시 대여 목록에서 해당 도서를 삭제하고,
+    // 그 도서의 loan_available을 "Y"로 바꿔서 "대여 가능" 상태로 설정
+    const updatedRentalList = rentalList.filter((book) => book.control_number !== control_number);
+
     setRentalList(updatedRentalList);
+
+    // 대여 목록에서 삭제된 도서의 loan_available을 "Y"로 변경하여 "대여 가능"으로 복원
+    const updatedBooks = rentalList.map((book) => {
+      if (book.control_number === control_number) {
+        return { ...book, loan_available: "Y" }; // 대여 가능으로 복원
+      }
+      return book;
+    });
+
+    // 새로운 상태를 반영
+    setRentalList(updatedBooks);
+
     alert('도서가 반납되었습니다.');
   };
-
   // 장바구니에 도서 추가하는 함수
   const addToCart = (book) => {
     if (!cart.some((item) => item.CTRLNO === book.CTRLNO)) {
@@ -48,7 +61,7 @@ const Router = () => {
       alert('대여에 실패했습니다.');
     }
   };
-  
+
   return (
     <BrowserRouter>
       <Routes>
