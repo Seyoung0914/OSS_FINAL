@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const ShowList = ({ cart = [], addToCart = () => { } }) => {
+const ShowList = ({ cart = [], addToCart = () => {} }) => {
   const [books, setBooks] = useState([]);
   const [filteredBooks, setFilteredBooks] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -27,7 +27,7 @@ const ShowList = ({ cart = [], addToCart = () => { } }) => {
         const response = await axios.get(`${apiUrl}?limit=100`);
         const bookArray = response.data.map((book) => ({
           ...book,
-          loan_available: book.loan_available === "Y" ? "대여 가능" : "대여 중",
+          loan_available: book.loan_available === "Y" ? "대여 가능" : "대여 중", // 상태 표시 변경
         }));
 
         setBooks(bookArray);
@@ -212,7 +212,6 @@ const ShowList = ({ cart = [], addToCart = () => { } }) => {
                 >
                   상세보기
                 </button>
-
               </div>
               <span
                 style={{
