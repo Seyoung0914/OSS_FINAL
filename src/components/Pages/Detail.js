@@ -18,19 +18,19 @@ const Detail = ({ cart = [], addToCart = () => {} }) => {
         setLoading(true);
         setError(null);
         
-        // 1️⃣ 상세 도서 정보 가져오기
-        const response = await axios.get(`${apiUrl}/${control_number}`); // URL에 control_number 삽입
-        const currentBook = response.data;
+        console.log("📚 control_number: ", control_number); // control_number 확인
+        const response = await axios.get(`${apiUrl}?control_number=${control_number}`); // URL 수정
+        const bookData = response.data; // API 응답이 배열일 경우 첫 번째 도서만 사용
+
+        if (!bookData) throw new Error("해당 도서를 찾을 수 없습니다.");
         
-        if (!currentBook) throw new Error("해당 도서를 찾을 수 없습니다.");
-        
-        setBookDetails(currentBook);
+        setBookDetails(bookData);
 
         // 2️⃣ 추천 도서 가져오기 (추천 도서는 모든 도서 중에서 필터링)
         const allBooksResponse = await axios.get(apiUrl);
         const allBooks = allBooksResponse.data;
         
-        const firstClassDigit = currentBook.class_number?.[0] || ""; // class_number의 첫 자리를 기준으로 추천
+        const firstClassDigit = bookData.class_number?.[0] || ""; // class_number의 첫 자리를 기준으로 추천
         const recommended = allBooks
           .filter(
             (book) => 
@@ -49,11 +49,24 @@ const Detail = ({ cart = [], addToCart = () => {} }) => {
       }
     };
 
-    fetchBookDetails();
+    if (control_number) {
+      fetchBookDetails();
+    }
   }, [control_number]);
 
   if (loading) return <p>로딩 중...</p>;
-  if (error) return <p>오류 발생: {error}</p>;
+
+  if (error) return (
+    <div>
+      <p>오류 발생: {error}</p>
+      <button 
+        onClick={() => window.location.reload()} 
+        style={{ marginTop: '20px', padding: '10px 20px' }}
+      >
+        다시 시도
+      </button>
+    </div>
+  );
 
   return (
     <div className="container">
