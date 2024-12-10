@@ -74,9 +74,8 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
     } else if (sortType === "publication_year_asc") {
       updatedBooks = updatedBooks.sort((a, b) => a.publication_year - b.publication_year);
     }
-
-    setFilteredBooks(updatedBooks);
     setCurrentPage(1); // 정렬 또는 필터링 시 1페이지로 리셋
+    setFilteredBooks(updatedBooks);
   }, [books, searchKeyword, filterType, showAvailableOnly, languageFilter, sortType]);
 
   const displayedBooks = filteredBooks.slice(
@@ -98,7 +97,6 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
     <div className="container">
       <h1>도서 리스트</h1>
 
-      {/* 오른쪽 상단에 장바구니 리스트 이동, 대여 리스트 이동 버튼 추가 */}
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <button
           className="btn btn-primary ms-2"
