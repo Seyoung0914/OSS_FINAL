@@ -1,21 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const RentalList = ({ rentalList = [], removeFromRentalList = () => {}, setAvailableBooks = () => {} }) => {
+const RentalList = ({ rentalList = [], returnBook }) => {
   const navigate = useNavigate();
 
-  const handleReturn = (book) => {
-    // 반납 시, 대여 목록에서 제거
-    removeFromRentalList(book.CTRLNO); // 대여 목록에서 해당 도서를 제거하는 함수
-
-    // 대여 가능 도서 목록에서 해당 도서를 '대여 가능' 상태로 변경
-    setAvailableBooks(prevBooks =>
-      prevBooks.map(item =>
-        item.CTRLNO === book.CTRLNO ? { ...item, AVAILABLE: "대여 가능" } : item
-      )
-    );
-
-    alert(`${book.TITLE} 도서가 반납되었습니다.`);
+  const handleReturn = (control_number) => {
+    returnBook(control_number); // 반납 함수 호출
   };
 
   if (rentalList.length === 0) {
@@ -37,7 +27,7 @@ const RentalList = ({ rentalList = [], removeFromRentalList = () => {}, setAvail
       <div id="rental-list" style={{ marginTop: '20px' }}>
         {rentalList.map((book) => (
           <div
-            key={book.CTRLNO}
+            key={book.control_number}
             className="rental-item"
             style={{
               display: 'flex',
@@ -48,8 +38,8 @@ const RentalList = ({ rentalList = [], removeFromRentalList = () => {}, setAvail
             }}
           >
             <div>
-              <strong>{book.TITLE}</strong>
-              <p>{`${book.AUTHOR} / ${book.PUBLER}`}</p>
+              <strong>{book.title}</strong>
+              <p>{`${book.author} / ${book.publisher}`}</p>
             </div>
             <div
               style={{
@@ -58,16 +48,9 @@ const RentalList = ({ rentalList = [], removeFromRentalList = () => {}, setAvail
                 alignItems: 'center',
               }}
             >
-              <span
-                style={{
-                  color: 'green', // 대여 중 도서 표시
-                }}
-              >
-                대여 중
-              </span>
               <button
                 className="btn btn-danger"
-                onClick={() => handleReturn(book)} // 반납하기 버튼 클릭 시
+                onClick={() => handleReturn(book.control_number)}
                 style={{ marginTop: '10px' }}
               >
                 반납하기
