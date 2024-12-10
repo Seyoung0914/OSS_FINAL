@@ -66,26 +66,19 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
       updatedBooks = updatedBooks.filter((book) => book.language === languageFilter);
     }
   
-    // 5️⃣ **정렬 로직 (한국어와 영어를 따로 정렬 후 병합)**
+    // 5️⃣ **정렬 로직 (예제 코드와 동일한 방식)**
     if (sortType === "title_asc") {
-      // 한국어와 영어로 분리
-      const koreanBooks = updatedBooks.filter((book) => book.language === '한국어');
-      const englishBooks = updatedBooks.filter((book) => book.language === '영어');
-    
-      // 한국어와 영어 각각 정렬
-      koreanBooks.sort((a, b) => a.title.localeCompare(b.title, 'ko', { sensitivity: 'base' }));
-      englishBooks.sort((a, b) => a.title.localeCompare(b.title, 'en', { sensitivity: 'base' }));
-    
-      // 한국어가 먼저, 영어가 나중에 병합
-      updatedBooks = [...koreanBooks, ...englishBooks];
+      updatedBooks = updatedBooks.sort((a, b) => 
+        a.title.localeCompare(b.title, 'ko', { sensitivity: 'base' })
+      );
     } 
     else if (sortType === "control_number_asc") {
-      updatedBooks = [...updatedBooks].sort((a, b) => 
+      updatedBooks = updatedBooks.sort((a, b) => 
         parseInt(a.control_number, 10) - parseInt(b.control_number, 10)
       );
     } 
     else if (sortType === "publication_year_asc") {
-      updatedBooks = [...updatedBooks].sort((a, b) => a.publication_year - b.publication_year);
+      updatedBooks = updatedBooks.sort((a, b) => a.publication_year - b.publication_year);
     }
   
     // 6️⃣ **필터링 및 정렬된 결과로 상태 업데이트 (중복 업데이트 방지)**
@@ -94,7 +87,6 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
       return isSame ? prev : updatedBooks;
     });
   }, [books, searchKeyword, filterType, showAvailableOnly, languageFilter, sortType]); 
-  
   
   const displayedBooks = filteredBooks.slice(
     (currentPage - 1) * itemsPerPage,
