@@ -23,7 +23,6 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
     const fetchBooks = async () => {
       try {
         setLoading(true);
-        setError(null);
         const response = await axios.get(`${apiUrl}?limit=100`);
         const bookArray = response.data.map((book) => ({
           ...book,
@@ -34,8 +33,7 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
         setFilteredBooks(bookArray);
         setLoading(false);
       } catch (err) {
-        console.error("Error fetching data:", err);
-        setError("데이터를 가져오는데 실패했습니다. 페이지를 다시 열어주세요.");
+        setError("데이터를 가져오는데 실패했습니다.");
         setLoading(false);
       }
     };
@@ -43,9 +41,8 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
     fetchBooks();
   }, []);
 
-  // 필터링과 정렬 적용 후 페이지를 1로 리셋
   useEffect(() => {
-    let updatedBooks = [...books]; // 불변성을 유지하기 위해 새로운 배열 생성
+    let updatedBooks = [...books];
 
     if (searchKeyword) {
       updatedBooks = updatedBooks.filter((book) =>
@@ -54,32 +51,23 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
     }
 
     if (showAvailableOnly) {
-      updatedBooks = updatedBooks.filter(
-        (book) => book.loan_available === "대여 가능"
-      );
+      updatedBooks = updatedBooks.filter((book) => book.loan_available === "대여 가능");
     }
 
     if (languageFilter !== "ALL") {
       updatedBooks = updatedBooks.filter((book) => book.language === languageFilter);
     }
 
-    // 정렬 로직 수정
     if (sortType === "title_asc") {
-      updatedBooks = [...updatedBooks].sort((a, b) =>
-        a.title.localeCompare(b.title, "ko", { sensitivity: "base" })
-      );
+      updatedBooks.sort((a, b) => a.title.localeCompare(b.title, "ko", { sensitivity: "base" }));
     } else if (sortType === "control_number_asc") {
-      updatedBooks = [...updatedBooks].sort((a, b) =>
-        parseInt(a.control_number, 10) - parseInt(b.control_number, 10)
-      );
+      updatedBooks.sort((a, b) => parseInt(a.control_number, 10) - parseInt(b.control_number, 10));
     } else if (sortType === "publication_year_asc") {
-      updatedBooks = [...updatedBooks].sort((a, b) => 
-        Number(a.publication_year) - Number(b.publication_year)
-      );
+      updatedBooks.sort((a, b) => parseInt(a.publication_year, 10) - parseInt(b.publication_year, 10));
     }
 
-    setFilteredBooks([...updatedBooks]); // 상태 변경을 인식시키기 위해 새로운 배열로 교체
-    setCurrentPage(1); // 정렬 또는 필터링 시 1페이지로 리셋
+    setFilteredBooks(updatedBooks);
+    setCurrentPage(1);
   }, [books, searchKeyword, filterType, showAvailableOnly, languageFilter, sortType]);
 
   const displayedBooks = filteredBooks.slice(
@@ -90,9 +78,6 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
   const totalPages = Math.ceil(filteredBooks.length / itemsPerPage);
 
   const changePage = (pageNumber) => setCurrentPage(pageNumber);
-
-  const startPage = 1;
-  const endPage = totalPages;
 
   if (loading) return <p>데이터를 불러오는 중입니다...</p>;
   if (error) return <p>오류 발생: {error}</p>;
