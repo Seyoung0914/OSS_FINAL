@@ -31,7 +31,7 @@ const Router = () => {
   };
 
   const addToCart = (book) => {
-    if (!cart.some((item) => item.CTRLNO === book.CTRLNO)) {
+    if (!cart.some((item) => item.control_number === book.control_number)) {
       setCart([...cart, book]);
     } else {
       alert('이 도서는 이미 장바구니에 추가되어 있습니다.');
@@ -39,7 +39,7 @@ const Router = () => {
   };
 
   const removeFromCart = (ctrlNo) => {
-    setCart(cart.filter((item) => item.CTRLNO !== ctrlNo));
+    setCart(cart.filter((item) => item.control_number !== ctrlNo));
   };
 
   const checkout = (cartBooks) => {
