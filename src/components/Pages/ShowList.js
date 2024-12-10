@@ -41,8 +41,10 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
     };
 
     fetchBooks();
-  }, []);
+  }, [])
+
   
+  /*정렬 수정 부분 시작*/
   useEffect(() => {
     if (!books || books.length === 0) return;
   
@@ -98,8 +100,9 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
 
     setCurrentPage(1);
   }, [books, searchKeyword, filterType, showAvailableOnly, languageFilter, sortType]);
-  
-  
+  /*정렬 수정 부분 끝*/
+
+
   const displayedBooks = filteredBooks.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
