@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Detail = () => {
+const Detail = ({ cart = [], addToCart = () => {} }) => {
   const { CTRLNO } = useParams();
   const navigate = useNavigate();
   const [bookDetails, setBookDetails] = useState(null);
@@ -41,6 +41,7 @@ const Detail = () => {
           LANG: row.getElementsByTagName("LANG")[0]?.textContent || "N/A",
           PAGE: row.getElementsByTagName("PAGE")[0]?.textContent || "N/A",
           ISBN: row.getElementsByTagName("ISBN")[0]?.textContent || "N/A",
+          AVAILABLE: "대여 가능", // 기본 상태
         }));
 
         const currentBook = books.find((book) => book.CTRLNO === CTRLNO);
@@ -72,6 +73,26 @@ const Detail = () => {
 
   return (
     <div className="container">
+      {/* 상단 이동 버튼 */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginBottom: "20px",
+        }}
+      >
+        <button
+          className="btn btn-primary"
+          onClick={() => navigate("/cart")}
+          style={{ marginRight: "10px" }}
+        >
+          장바구니 보기
+        </button>
+        <button className="btn btn-secondary" onClick={() => navigate("/rental")}>
+          대여 리스트 보기
+        </button>
+      </div>
+
       <h1>도서 상세 정보</h1>
       {bookDetails && (
         <div className="book-details">
@@ -110,12 +131,30 @@ const Detail = () => {
                 <strong>{book.TITLE}</strong>
                 <p>{`${book.AUTHOR} / ${book.PUBLER}`}</p>
               </div>
-              <button
-                className="btn btn-info"
-                onClick={() => navigate(`/book/${book.CTRLNO}`)}
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
               >
-                상세보기
-              </button>
+                <button
+                  className="btn btn-warning"
+                  onClick={() => addToCart(book)}
+                  disabled={cart.some((item) => item.CTRLNO === book.CTRLNO)}
+                  style={{ marginBottom: "10px" }}
+                >
+                  {cart.some((item) => item.CTRLNO === book.CTRLNO)
+                    ? "장바구니에 있음"
+                    : "장바구니 추가"}
+                </button>
+                <button
+                  className="btn btn-info"
+                  onClick={() => navigate(`/book/${book.CTRLNO}`)}
+                >
+                  상세보기
+                </button>
+              </div>
             </div>
           ))
         )}
