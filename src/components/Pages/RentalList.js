@@ -48,15 +48,13 @@ const RentalList = ({ rentalList = [], returnBook }) => {
                 alignItems: 'center',
               }}
             >
-              // RentalList.js
-
               <button
                 className="btn btn-danger"
-                onClick={() => handleReturnBook(book)}
+                onClick={() => handleReturn(book.control_number)}
+                style={{ marginTop: '10px' }}
               >
                 반납하기
               </button>
-
             </div>
           </div>
         ))}

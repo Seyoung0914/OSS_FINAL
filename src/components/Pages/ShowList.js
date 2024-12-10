@@ -27,7 +27,7 @@ const ShowList = ({ cart = [], addToCart = () => { } }) => {
         const response = await axios.get(`${apiUrl}?limit=100`);
         const bookArray = response.data.map((book) => ({
           ...book,
-          loan_available: book.loan_available === "Y" ? "대여 가능" : "대여 불가",
+          loan_available: book.loan_available === "Y" ? "대여 가능" : "대여 중",
         }));
 
         setBooks(bookArray);
