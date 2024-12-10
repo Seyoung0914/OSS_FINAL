@@ -42,30 +42,31 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
 
     fetchBooks();
   }, []);
+  
   useEffect(() => {
     if (!books || books.length === 0) return;
   
-    // 1️⃣ 항상 books 배열을 복사하여 초기화 (이전 filteredBooks 절대 사용 X)
-    let updatedBooks = [...books];
+    // 1️⃣ **항상 원본 books 배열을 복사하여 초기화 (이전 filteredBooks 절대 사용 X)**
+    let updatedBooks = [...books]; 
   
-    // 2️⃣ 검색어 필터
+    // 2️⃣ **검색어 필터**
     if (searchKeyword) {
       updatedBooks = updatedBooks.filter((book) =>
         book[filterType]?.toLowerCase().includes(searchKeyword.toLowerCase())
       );
     }
   
-    // 3️⃣ 대여 가능 여부 필터
+    // 3️⃣ **대여 가능 여부 필터**
     if (showAvailableOnly) {
       updatedBooks = updatedBooks.filter((book) => book.loan_available === "대여 가능");
     }
   
-    // 4️⃣ 언어 필터
+    // 4️⃣ **언어 필터**
     if (languageFilter !== "ALL") {
       updatedBooks = updatedBooks.filter((book) => book.language === languageFilter);
     }
   
-    // 5️⃣ 정렬 로직
+    // 5️⃣ **정렬 로직 (로케일을 명확히 지정함)**
     if (sortType === "title_asc") {
       updatedBooks = updatedBooks.sort((a, b) => 
         a.title.localeCompare(b.title, undefined, { sensitivity: 'base', numeric: true })
@@ -80,10 +81,13 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
       updatedBooks = updatedBooks.sort((a, b) => a.publication_year - b.publication_year);
     }
   
-    // 6️⃣ 최종 필터링 및 정렬된 결과로 상태 업데이트
-    setFilteredBooks(updatedBooks);
+    // 6️⃣ **필터링 및 정렬된 결과로 상태 업데이트 (기존 filteredBooks와 같으면 상태 업데이트 하지 않음)**
+    setFilteredBooks(prev => {
+      const isSame = JSON.stringify(prev) === JSON.stringify(updatedBooks);
+      return isSame ? prev : updatedBooks;
+    });
   }, [books, searchKeyword, filterType, showAvailableOnly, languageFilter, sortType]); 
-  
+
   
   const displayedBooks = filteredBooks.slice(
     (currentPage - 1) * itemsPerPage,
