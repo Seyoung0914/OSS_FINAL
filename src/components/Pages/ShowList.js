@@ -76,7 +76,8 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
       updatedBooks = updatedBooks.sort((a, b) => a.publication_year - b.publication_year);
     }
 
-    setFilteredBooks([...updatedBooks]);
+    setFilteredBooks(updatedBooks);
+    setCurrentPage(1); // 정렬 시 1페이지로 돌아가게 설정
   }, [books, searchKeyword, filterType, showAvailableOnly, languageFilter, sortType]);
 
   const displayedBooks = filteredBooks.slice(
@@ -97,6 +98,23 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
   return (
     <div className="container">
       <h1>도서 리스트</h1>
+      
+      {/* 오른쪽 상단에 장바구니 리스트 이동, 대여 리스트 이동 버튼 추가 */}
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <button
+          className="btn btn-primary ms-2"
+          onClick={() => navigate("/cart")}
+        >
+          장바구니 보기
+        </button>
+        <button
+          className="btn btn-secondary ms-2"
+          onClick={() => navigate("/rental")}
+        >
+          대여 리스트 보기
+        </button>
+      </div>
+
       <div
         className="filters"
         style={{
@@ -216,6 +234,8 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
             {pageNumber}
           </button>
         ))}
+        {/* 페이지 표시 */}
+        <div>현재 페이지: {currentPage}</div>
       </div>
     </div>
   );
