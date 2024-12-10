@@ -3,56 +3,40 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Detail = ({ cart = [], addToCart = () => {} }) => {
-  const { CTRLNO } = useParams();
+  const { control_number } = useParams(); // control_number로 변경
   const navigate = useNavigate();
   const [bookDetails, setBookDetails] = useState(null);
   const [recommendedBooks, setRecommendedBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const apiUrl = "https://67582f9d60576a194d0f3f84.mockapi.io/book";
+
   useEffect(() => {
     const fetchBookDetails = async () => {
       try {
         setLoading(true);
         setError(null);
-
-        const response = await axios.get("/api/books"); // API 호출
-        const xmlData = response.data;
-
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(xmlData, "application/xml");
-
-        const rows = xmlDoc.getElementsByTagName("row");
-        const books = Array.from(rows).map((row) => ({
-          CTRLNO: row.getElementsByTagName("CTRLNO")[0]?.textContent || "N/A",
-          TITLE: row.getElementsByTagName("TITLE")[0]?.textContent || "제목 없음",
-          BIB_TYPE_NAME:
-            row.getElementsByTagName("BIB_TYPE_NAME")[0]?.textContent || "N/A",
-          AUTHOR: row.getElementsByTagName("AUTHOR")[0]?.textContent || "저자 없음",
-          PUBLER: row.getElementsByTagName("PUBLER")[0]?.textContent || "출판사 없음",
-          PUBLER_YEAR:
-            parseInt(
-              row.getElementsByTagName("PUBLER_YEAR")[0]?.textContent || "0",
-              10
-            ),
-          CALL_NO: row.getElementsByTagName("CALL_NO")[0]?.textContent || "N/A",
-          CLASS_NO: row.getElementsByTagName("CLASS_NO")[0]?.textContent || "N/A",
-          AUTHOR_NO: row.getElementsByTagName("AUTHOR_NO")[0]?.textContent || "N/A",
-          LANG: row.getElementsByTagName("LANG")[0]?.textContent || "N/A",
-          PAGE: row.getElementsByTagName("PAGE")[0]?.textContent || "N/A",
-          ISBN: row.getElementsByTagName("ISBN")[0]?.textContent || "N/A",
-          AVAILABLE: "대여 가능", // 기본 상태
-        }));
-
-        const currentBook = books.find((book) => book.CTRLNO === CTRLNO);
+        
+        // 1️⃣ 상세 도서 정보 가져오기
+        const response = await axios.get(`${apiUrl}/${control_number}`); // URL에 control_number 삽입
+        const currentBook = response.data;
+        
         if (!currentBook) throw new Error("해당 도서를 찾을 수 없습니다.");
-
+        
         setBookDetails(currentBook);
 
-        // CLASS_NO의 첫 자리수에 기반한 추천 도서 생성
-        const firstClassDigit = currentBook.CLASS_NO[0];
-        const recommended = books
-          .filter((book) => book.CLASS_NO.startsWith(firstClassDigit) && book.CTRLNO !== CTRLNO)
+        // 2️⃣ 추천 도서 가져오기 (추천 도서는 모든 도서 중에서 필터링)
+        const allBooksResponse = await axios.get(apiUrl);
+        const allBooks = allBooksResponse.data;
+        
+        const firstClassDigit = currentBook.class_number?.[0] || ""; // class_number의 첫 자리를 기준으로 추천
+        const recommended = allBooks
+          .filter(
+            (book) => 
+              book.class_number?.startsWith(firstClassDigit) && 
+              book.control_number !== control_number
+          )
           .sort(() => 0.5 - Math.random()) // 랜덤 정렬
           .slice(0, 5); // 5권만 선택
 
@@ -66,26 +50,15 @@ const Detail = ({ cart = [], addToCart = () => {} }) => {
     };
 
     fetchBookDetails();
-  }, [CTRLNO]);
+  }, [control_number]);
 
   if (loading) return <p>로딩 중...</p>;
   if (error) return <p>오류 발생: {error}</p>;
 
   return (
     <div className="container">
-      {/* 상단 이동 버튼 */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          marginBottom: "20px",
-        }}
-      >
-        <button
-          className="btn btn-primary"
-          onClick={() => navigate("/cart")}
-          style={{ marginRight: "10px" }}
-        >
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "20px" }}>
+        <button className="btn btn-primary" onClick={() => navigate("/cart")} style={{ marginRight: "10px" }}>
           장바구니 보기
         </button>
         <button className="btn btn-secondary" onClick={() => navigate("/rental")}>
@@ -96,26 +69,23 @@ const Detail = ({ cart = [], addToCart = () => {} }) => {
       <h1>도서 상세 정보</h1>
       {bookDetails && (
         <div className="book-details">
-          <p><strong>제목:</strong> {bookDetails.TITLE}</p>
-          <p><strong>자료유형:</strong> {bookDetails.BIB_TYPE_NAME}</p>
-          <p><strong>저자:</strong> {bookDetails.AUTHOR}</p>
-          <p><strong>출판사:</strong> {bookDetails.PUBLER}</p>
-          <p><strong>출판 연도:</strong> {bookDetails.PUBLER_YEAR}</p>
-          <p><strong>청구기호:</strong> {bookDetails.CALL_NO}</p>
-          <p><strong>분류기호:</strong> {bookDetails.CLASS_NO}</p>
-          <p><strong>저자기호:</strong> {bookDetails.AUTHOR_NO}</p>
-          <p><strong>언어:</strong> {bookDetails.LANG}</p>
-          <p><strong>페이지:</strong> {bookDetails.PAGE}</p>
-          <p><strong>ISBN:</strong> {bookDetails.ISBN}</p>
-          {/* 장바구니 추가 버튼 */}
+          <p><strong>제목:</strong> {bookDetails.title}</p>
+          <p><strong>저자:</strong> {bookDetails.author}</p>
+          <p><strong>출판사:</strong> {bookDetails.publisher}</p>
+          <p><strong>출판 연도:</strong> {bookDetails.publication_year}</p>
+          <p><strong>분류기호:</strong> {bookDetails.class_number}</p>
+          <p><strong>언어:</strong> {bookDetails.language}</p>
+          <p><strong>페이지:</strong> {bookDetails.pages}</p>
+          <p><strong>ISBN:</strong> {bookDetails.isbn}</p>
+
           <button
             className="btn btn-warning"
             onClick={() => addToCart(bookDetails)}
-            disabled={cart.some((item) => item.CTRLNO === bookDetails.CTRLNO)}
+            disabled={cart.some((item) => item.control_number === bookDetails.control_number)}
             style={{ marginTop: "20px" }}
           >
-            {cart.some((item) => item.CTRLNO === bookDetails.CTRLNO)
-              ? "장바구니에 있음"
+            {cart.some((item) => item.control_number === bookDetails.control_number) 
+              ? "장바구니에 있음" 
               : "장바구니 추가"}
           </button>
         </div>
@@ -128,7 +98,7 @@ const Detail = ({ cart = [], addToCart = () => {} }) => {
         ) : (
           recommendedBooks.map((book) => (
             <div
-              key={book.CTRLNO}
+              key={book.control_number}
               className="recommended-book"
               style={{
                 display: "flex",
@@ -139,29 +109,23 @@ const Detail = ({ cart = [], addToCart = () => {} }) => {
               }}
             >
               <div>
-                <strong>{book.TITLE}</strong>
-                <p>{`${book.AUTHOR} / ${book.PUBLER}`}</p>
+                <strong>{book.title}</strong>
+                <p>{`${book.author} / ${book.publisher}`}</p>
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                 <button
                   className="btn btn-warning"
                   onClick={() => addToCart(book)}
-                  disabled={cart.some((item) => item.CTRLNO === book.CTRLNO)}
+                  disabled={cart.some((item) => item.control_number === book.control_number)}
                   style={{ marginBottom: "10px" }}
                 >
-                  {cart.some((item) => item.CTRLNO === book.CTRLNO)
-                    ? "장바구니에 있음"
+                  {cart.some((item) => item.control_number === book.control_number) 
+                    ? "장바구니에 있음" 
                     : "장바구니 추가"}
                 </button>
                 <button
                   className="btn btn-info"
-                  onClick={() => navigate(`/book/${book.CTRLNO}`)}
+                  onClick={() => navigate(`/book/${book.control_number}`)}
                 >
                   상세보기
                 </button>
