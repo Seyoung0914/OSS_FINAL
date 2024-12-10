@@ -107,6 +107,17 @@ const Detail = ({ cart = [], addToCart = () => {} }) => {
           <p><strong>언어:</strong> {bookDetails.LANG}</p>
           <p><strong>페이지:</strong> {bookDetails.PAGE}</p>
           <p><strong>ISBN:</strong> {bookDetails.ISBN}</p>
+          {/* 장바구니 추가 버튼 */}
+          <button
+            className="btn btn-warning"
+            onClick={() => addToCart(bookDetails)}
+            disabled={cart.some((item) => item.CTRLNO === bookDetails.CTRLNO)}
+            style={{ marginTop: "20px" }}
+          >
+            {cart.some((item) => item.CTRLNO === bookDetails.CTRLNO)
+              ? "장바구니에 있음"
+              : "장바구니 추가"}
+          </button>
         </div>
       )}
 
