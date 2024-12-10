@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 const CartList = ({ cart = [], removeFromCart = () => {}, checkout = () => {} }) => {
   const navigate = useNavigate();
 
-  const handleRemove = (ctrlNo) => {
-    removeFromCart(ctrlNo);
+  const handleRemove = (control_number) => {
+    removeFromCart(control_number);
   };
 
   const handleCheckout = () => {
@@ -37,7 +37,7 @@ const CartList = ({ cart = [], removeFromCart = () => {}, checkout = () => {} })
       <div id="cart-list" style={{ marginTop: '20px' }}>
         {cart.map((book) => (
           <div
-            key={book.CTRLNO}
+            key={book.control_number}
             className="cart-item"
             style={{
               display: 'flex',
@@ -48,8 +48,8 @@ const CartList = ({ cart = [], removeFromCart = () => {}, checkout = () => {} })
             }}
           >
             <div>
-              <strong>{book.TITLE}</strong>
-              <p>{`${book.AUTHOR} / ${book.PUBLER}`}</p>
+              <strong>{book.title}</strong>
+              <p>{`${book.author} / ${book.publisher}`}</p>
             </div>
             <div
               style={{
@@ -60,17 +60,17 @@ const CartList = ({ cart = [], removeFromCart = () => {}, checkout = () => {} })
             >
               <button
                 className="btn btn-danger"
-                onClick={() => handleRemove(book.CTRLNO)}
+                onClick={() => handleRemove(book.control_number)}
                 style={{ marginBottom: '10px' }}
               >
                 삭제
               </button>
               <span
                 style={{
-                  color: book.AVAILABLE === '대여 가능' ? 'green' : 'red',
+                  color: book.loan_available === '대여 가능' ? 'green' : 'red',
                 }}
               >
-                {book.AVAILABLE}
+                {book.loan_available}
               </span>
             </div>
           </div>
