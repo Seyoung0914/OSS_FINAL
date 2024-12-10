@@ -43,26 +43,30 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
     fetchBooks();
   }, []);
 
-  // 필터링과 정렬 적용 후 페이지를 1로 리셋
+  // 정렬 및 필터링이 변경될 때마다 filteredBooks 상태 업데이트, 그리고 1페이지로 리셋
   useEffect(() => {
     let updatedBooks = books;
 
+    // 검색 필터 적용
     if (searchKeyword) {
       updatedBooks = updatedBooks.filter((book) =>
         book[filterType]?.toLowerCase().includes(searchKeyword.toLowerCase())
       );
     }
 
+    // 대여 가능 도서만 보기 필터 적용
     if (showAvailableOnly) {
       updatedBooks = updatedBooks.filter(
         (book) => book.loan_available === "대여 가능"
       );
     }
 
+    // 언어 필터 적용
     if (languageFilter !== "ALL") {
       updatedBooks = updatedBooks.filter((book) => book.language === languageFilter);
     }
 
+    // 정렬 적용
     if (sortType === "title_asc") {
       updatedBooks = updatedBooks.sort((a, b) =>
         a.title.localeCompare(b.title, "ko", { sensitivity: "base" })
@@ -74,10 +78,19 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
     } else if (sortType === "publication_year_asc") {
       updatedBooks = updatedBooks.sort((a, b) => a.publication_year - b.publication_year);
     }
-    setCurrentPage(1); // 정렬 또는 필터링 시 1페이지로 리셋
-    setFilteredBooks(updatedBooks);
-  }, [books, searchKeyword, filterType, showAvailableOnly, languageFilter, sortType]);
 
+    setFilteredBooks(updatedBooks);
+    setCurrentPage(1); // 정렬이나 필터링 시 1페이지로 리셋
+  }, [
+    books, 
+    searchKeyword, 
+    filterType, 
+    showAvailableOnly, 
+    languageFilter, 
+    sortType
+  ]);
+
+  // 페이지에 표시할 도서 목록
   const displayedBooks = filteredBooks.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -96,22 +109,6 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
   return (
     <div className="container">
       <h1>도서 리스트</h1>
-
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <button
-          className="btn btn-primary ms-2"
-          onClick={() => navigate("/cart")}
-        >
-          장바구니 보기
-        </button>
-        <button
-          className="btn btn-secondary ms-2"
-          onClick={() => navigate("/rental")}
-        >
-          대여 리스트 보기
-        </button>
-      </div>
-
       <div
         className="filters"
         style={{
