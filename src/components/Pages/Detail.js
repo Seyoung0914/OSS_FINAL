@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Detail = ({ cart = [], addToCart = () => {} }) => {
-  const { control_number } = useParams(); // URL의 control_number 추출
+const Detail = ({ cart = [], addToCart = () => { } }) => {
+  const { control_number } = useParams(); // URL에서 control_number 추출
   const navigate = useNavigate();
   const [bookDetails, setBookDetails] = useState(null);
   const [recommendedBooks, setRecommendedBooks] = useState([]);
@@ -17,28 +17,30 @@ const Detail = ({ cart = [], addToCart = () => {} }) => {
       try {
         setLoading(true);
         setError(null);
-        
-        console.log("📚 control_number: ", control_number); // control_number 확인
-        const response = await axios.get(`${apiUrl}?control_number=${control_number}`); // URL 수정
-        const bookData = response.data; // API 응답이 배열일 경우 첫 번째 도서만 사용
 
-        if (!bookData) throw new Error("해당 도서를 찾을 수 없습니다.");
-        
-        setBookDetails(bookData);
+        console.log("📚 control_number:", control_number); // control_number 확인
 
-        // 2️⃣ 추천 도서 가져오기 (추천 도서는 모든 도서 중에서 필터링)
-        const allBooksResponse = await axios.get(apiUrl);
+        // API 호출: control_number로 필터링
+        const response = await axios.get(`${apiUrl}?control_number=${control_number}`);
+        const bookData = response.data[0]; // 데이터가 배열로 반환되면 첫 번째 요소를 가져옴
+
+        if (!bookData) throw new Error("도서 정보를 찾을 수 없습니다.");
+
+        setBookDetails(bookData); // 상세 정보 상태 업데이트
+
+        // 추천 도서 로드
+        const allBooksResponse = await axios.get(apiUrl); // 전체 데이터 가져오기
         const allBooks = allBooksResponse.data;
-        
-        const firstClassDigit = bookData.class_number?.[0] || ""; // class_number의 첫 자리를 기준으로 추천
+
+        // 추천 도서 필터링: 동일한 class_number의 도서를 가져오되, 현재 책은 제외
         const recommended = allBooks
           .filter(
-            (book) => 
-              book.class_number?.startsWith(firstClassDigit) && 
-              book.control_number !== control_number
+            (book) =>
+              book.class_number?.startsWith(bookData.class_number[0]) && // 같은 class_number의 첫 글자로 필터링
+              book.control_number !== control_number // 현재 책 제외
           )
           .sort(() => 0.5 - Math.random()) // 랜덤 정렬
-          .slice(0, 5); // 5권만 선택
+          .slice(0, 3); // 최대 3권만 추천
 
         setRecommendedBooks(recommended);
         setLoading(false);
@@ -50,23 +52,18 @@ const Detail = ({ cart = [], addToCart = () => {} }) => {
     };
 
     if (control_number) {
-      fetchBookDetails();
+      fetchBookDetails(); // control_number가 있을 때만 데이터 요청
     }
   }, [control_number]);
 
   if (loading) return <p>로딩 중...</p>;
-
-  if (error) return (
-    <div>
-      <p>오류 발생: {error}</p>
-      <button 
-        onClick={() => window.location.reload()} 
-        style={{ marginTop: '20px', padding: '10px 20px' }}
-      >
-        다시 시도
-      </button>
-    </div>
-  );
+  if (error)
+    return (
+      <div>
+        <p>오류 발생: {error}</p>
+        <button onClick={() => window.location.reload()}>다시 시도</button>
+      </div>
+    );
 
   return (
     <div className="container">
@@ -97,8 +94,8 @@ const Detail = ({ cart = [], addToCart = () => {} }) => {
             disabled={cart.some((item) => item.control_number === bookDetails.control_number)}
             style={{ marginTop: "20px" }}
           >
-            {cart.some((item) => item.control_number === bookDetails.control_number) 
-              ? "장바구니에 있음" 
+            {cart.some((item) => item.control_number === bookDetails.control_number)
+              ? "장바구니에 있음"
               : "장바구니 추가"}
           </button>
         </div>
@@ -132,8 +129,8 @@ const Detail = ({ cart = [], addToCart = () => {} }) => {
                   disabled={cart.some((item) => item.control_number === book.control_number)}
                   style={{ marginBottom: "10px" }}
                 >
-                  {cart.some((item) => item.control_number === book.control_number) 
-                    ? "장바구니에 있음" 
+                  {cart.some((item) => item.control_number === book.control_number)
+                    ? "장바구니에 있음"
                     : "장바구니 추가"}
                 </button>
                 <button
