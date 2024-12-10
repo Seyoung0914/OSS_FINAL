@@ -15,7 +15,7 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
-  const itemsPerPage = 10; 
+  const itemsPerPage = 10;
 
   const apiUrl = "https://67582f9d60576a194d0f3f84.mockapi.io/book";
 
@@ -43,9 +43,8 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
     fetchBooks();
   }, []);
 
+  // 필터링과 정렬 적용 후 페이지를 1로 리셋
   useEffect(() => {
-    if (!books || books.length === 0) return;
-
     let updatedBooks = books;
 
     if (searchKeyword) {
@@ -77,7 +76,7 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
     }
 
     setFilteredBooks(updatedBooks);
-    setCurrentPage(1); // 정렬 시 1페이지로 돌아가게 설정
+    setCurrentPage(1); // 정렬 또는 필터링 시 1페이지로 리셋
   }, [books, searchKeyword, filterType, showAvailableOnly, languageFilter, sortType]);
 
   const displayedBooks = filteredBooks.slice(
@@ -98,7 +97,7 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
   return (
     <div className="container">
       <h1>도서 리스트</h1>
-      
+
       {/* 오른쪽 상단에 장바구니 리스트 이동, 대여 리스트 이동 버튼 추가 */}
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <button
@@ -229,13 +228,15 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
             key={pageNumber}
             className={`page-btn ${currentPage === pageNumber ? "active" : ""}`}
             onClick={() => changePage(pageNumber)}
-            style={{ marginRight: "5px" }}
+            style={{
+              marginRight: "5px",
+              backgroundColor: currentPage === pageNumber ? "#007bff" : "", // 선택된 페이지는 파란색으로 표시
+              opacity: currentPage === pageNumber ? 1 : 0.7, // 선택된 페이지만 투명도 1
+            }}
           >
             {pageNumber}
           </button>
         ))}
-        {/* 페이지 표시 */}
-        <div>현재 페이지: {currentPage}</div>
       </div>
     </div>
   );
