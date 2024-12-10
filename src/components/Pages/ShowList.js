@@ -46,7 +46,7 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
   useEffect(() => {
     if (!books || books.length === 0) return;
   
-    // 1️⃣ **항상 books 배열을 복사하여 초기화 (기존의 filteredBooks를 절대 사용하지 않음)**
+    // 1️⃣ **항상 books 배열을 복사하여 초기화**
     let updatedBooks = [...books];
   
     // 2️⃣ **검색어 필터**
@@ -66,7 +66,7 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
       updatedBooks = updatedBooks.filter((book) => book.language === languageFilter);
     }
   
-    // 5️⃣ **정렬 로직 (예제 코드와 동일한 방식)**
+    // 5️⃣ **정렬 로직**
     if (sortType === "title_asc") {
       updatedBooks = updatedBooks.sort((a, b) => 
         a.title.localeCompare(b.title, 'ko', { sensitivity: 'base' })
@@ -81,12 +81,24 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
       updatedBooks = updatedBooks.sort((a, b) => a.publication_year - b.publication_year);
     }
   
-    // 6️⃣ **필터링 및 정렬된 결과로 상태 업데이트 (중복 업데이트 방지)**
-    setFilteredBooks(prev => {
-      const isSame = JSON.stringify(prev) === JSON.stringify(updatedBooks);
-      return isSame ? prev : updatedBooks;
+    // 6️⃣ **중복된 책을 제거**
+    // 같은 book의 control_number가 중복되었는지 확인하여 중복 제거
+    const uniqueBooks = [];
+    const seenControlNumbers = new Set();
+    updatedBooks.forEach((book) => {
+      if (!seenControlNumbers.has(book.control_number)) {
+        seenControlNumbers.add(book.control_number);
+        uniqueBooks.push(book);
+      }
     });
-  }, [books, searchKeyword, filterType, showAvailableOnly, languageFilter, sortType]); 
+  
+    // 7️⃣ **필터링 및 정렬된 결과로 상태 업데이트 (중복 업데이트 방지)**
+    setFilteredBooks(prev => {
+      const isSame = JSON.stringify(prev) === JSON.stringify(uniqueBooks);
+      return isSame ? prev : uniqueBooks;
+    });
+  }, [books, searchKeyword, filterType, showAvailableOnly, languageFilter, sortType]);
+  
   
   const displayedBooks = filteredBooks.slice(
     (currentPage - 1) * itemsPerPage,
