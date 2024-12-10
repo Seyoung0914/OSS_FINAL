@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Detail = ({ cart = [], addToCart = () => {} }) => {
-  const { control_number } = useParams(); // control_number로 변경
+  const { control_number } = useParams(); // URL의 control_number 추출
   const navigate = useNavigate();
   const [bookDetails, setBookDetails] = useState(null);
   const [recommendedBooks, setRecommendedBooks] = useState([]);
@@ -125,7 +125,7 @@ const Detail = ({ cart = [], addToCart = () => {} }) => {
                 </button>
                 <button
                   className="btn btn-info"
-                  onClick={() => navigate(`/book/${book.control_number}`)}
+                  onClick={() => navigate(`/book/${book.control_number}`)} // 다시 상세보기로 이동
                 >
                   상세보기
                 </button>

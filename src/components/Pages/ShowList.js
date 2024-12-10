@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const ShowList = ({ cart = [], addToCart = () => {} }) => {
+const ShowList = ({ cart = [], addToCart = () => { } }) => {
   const [books, setBooks] = useState([]);
   const [filteredBooks, setFilteredBooks] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -46,28 +46,28 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
   useEffect(() => {
     const applyFiltersAndSort = () => {
       let updatedBooks = [...books]; // 불변성 유지
-  
+
       // 1️⃣ 검색어 필터
       if (searchKeyword) {
         updatedBooks = updatedBooks.filter((book) =>
           book[filterType]?.toLowerCase().includes(searchKeyword.toLowerCase())
         );
       }
-  
+
       // 2️⃣ 대여 가능 여부 필터
       if (showAvailableOnly) {
         updatedBooks = updatedBooks.filter(
           (book) => book.loan_available === "대여 가능"
         );
       }
-  
+
       // 3️⃣ 언어 필터
       if (languageFilter !== "ALL") {
         updatedBooks = updatedBooks.filter(
           (book) => book.language === languageFilter
         );
       }
-  
+
       // 4️⃣ 정렬 (불변성 유지)
       if (sortType === "title_asc") {
         updatedBooks = [...updatedBooks].sort((a, b) =>
@@ -77,16 +77,16 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
         updatedBooks = [...updatedBooks].sort((a, b) =>
           parseInt(a.control_number, 10) - parseInt(b.control_number, 10)
         );
-      } 
-  
+      }
+
       return updatedBooks;
     };
-  
+
     const updatedBooks = applyFiltersAndSort();
     setFilteredBooks(updatedBooks); // 필터된 결과로 상태 업데이트
     setCurrentPage(1); // 페이지 초기화
   }, [books, searchKeyword, filterType, showAvailableOnly, languageFilter, sortType]);
-  
+
   const displayedBooks = filteredBooks.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -210,10 +210,11 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
                 </button>
                 <button
                   className="btn btn-info"
-                  onClick={() => navigate(`/book/${book.control_number}`)}
+                  onClick={() => navigate(`/book/${book.control_number}`)} // control_number로 경로 이동
                 >
                   상세보기
                 </button>
+
               </div>
               <span
                 style={{
