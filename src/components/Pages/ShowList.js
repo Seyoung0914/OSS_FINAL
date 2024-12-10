@@ -101,6 +101,7 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
     <div className="container">
       <h1>도서 리스트</h1>
 
+      {/* 오른쪽 상단에 장바구니 리스트 이동, 대여 리스트 이동 버튼 추가 */}
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <button
           className="btn btn-primary ms-2"
@@ -116,7 +117,14 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
         </button>
       </div>
 
-      <div className="filters">
+      <div
+        className="filters"
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <div>
           <input
             type="text"
@@ -124,37 +132,89 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
           />
-          <select onChange={(e) => setFilterType(e.target.value)} value={filterType}>
+          <select
+            onChange={(e) => setFilterType(e.target.value)}
+            value={filterType}
+          >
             <option value="title">제목</option>
             <option value="author">저자</option>
             <option value="publisher">출판사</option>
           </select>
-          <select onChange={(e) => setSortType(e.target.value)} value={sortType} style={{ marginLeft: "10px" }}>
+          <select
+            onChange={(e) => setSortType(e.target.value)}
+            value={sortType}
+            style={{ marginLeft: "10px" }}
+          >
             <option value="">정렬 없음</option>
             <option value="title_asc">책 제목 가나다순</option>
             <option value="control_number_asc">자료 코드순</option>
             <option value="publication_year_asc">출판 연도순</option>
           </select>
+          <select
+            onChange={(e) => setLanguageFilter(e.target.value)}
+            value={languageFilter}
+            style={{ marginLeft: "10px" }}
+          >
+            <option value="ALL">모든 언어</option>
+            <option value="한국어">한국어</option>
+            <option value="영어">영어</option>
+          </select>
+          <label style={{ marginLeft: "10px" }}>
+            <input
+              type="checkbox"
+              checked={showAvailableOnly}
+              onChange={(e) => setShowAvailableOnly(e.target.checked)}
+            />
+            대여 가능 도서만 보기
+          </label>
         </div>
       </div>
 
-      <div id="data-list">
+      <div id="data-list" style={{ marginTop: "20px" }}>
         {displayedBooks.map((book) => (
-          <div key={book.control_number} className="book-item">
+          <div
+            key={book.control_number}
+            className="book-item"
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              borderBottom: "1px solid #ccc",
+              padding: "10px 0",
+            }}
+          >
             <div>
               <strong>{book.title}</strong>
               <p>{`${book.author} / ${book.publisher}`}</p>
             </div>
-            <div>
-              <button 
-                className="btn btn-warning" 
-                onClick={() => addToCart(book)} 
-                disabled={cart.some((item) => item.control_number === book.control_number)}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <div style={{ marginBottom: '10px' }}>
+                <button
+                  className="btn btn-warning"
+                  onClick={() => addToCart(book)}
+                  disabled={cart.some((item) => item.control_number === book.control_number)}
+                  style={{ marginRight: '10px' }}
+                >
+                  {cart.some((item) => item.control_number === book.control_number) ? '장바구니에 있음' : '장바구니 추가'}
+                </button>
+                <button
+                  className="btn btn-info"
+                  onClick={() => navigate(`/book/${book.control_number}`)}
+                >
+                  상세보기
+                </button>
+              </div>
+              <span
+                style={{
+                  color: book.loan_available === "대여 가능" ? "green" : "red",
+                }}
               >
-                {cart.some((item) => item.control_number === book.control_number) ? '장바구니에 있음' : '장바구니 추가'}
-              </button>
-              <button className="btn btn-info" onClick={() => navigate(`/book/${book.control_number}`)}>상세보기</button>
-              <span style={{ color: book.loan_available === "대여 가능" ? "green" : "red" }}>
                 {book.loan_available}
               </span>
             </div>
@@ -163,11 +223,19 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
       </div>
 
       <div className="pagination">
-        {Array.from({ length: endPage }, (_, i) => startPage + i).map((pageNumber) => (
-          <button 
-            key={pageNumber} 
-            className={`page-btn ${currentPage === pageNumber ? "active" : ""}`} 
+        {Array.from(
+          { length: endPage },
+          (_, i) => startPage + i
+        ).map((pageNumber) => (
+          <button
+            key={pageNumber}
+            className={`page-btn ${currentPage === pageNumber ? "active" : ""}`}
             onClick={() => changePage(pageNumber)}
+            style={{
+              marginRight: "5px",
+              backgroundColor: currentPage === pageNumber ? "#007bff" : "", // 선택된 페이지는 파란색으로 표시
+              opacity: currentPage === pageNumber ? 1 : 0.7, // 선택된 페이지만 투명도 1
+            }}
           >
             {pageNumber}
           </button>
