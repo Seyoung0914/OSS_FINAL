@@ -45,13 +45,13 @@ const Router = () => {
   const checkout = (cartBooks) => {
     const updatedRentalList = cartBooks.map((book) => ({
       ...book,
-      loan_available: "N", // 대여 중 상태로 변경
+      loan_available: "N", 
     }));
 
-    // 장바구니에 있는 모든 도서를 대여 목록에 추가
+   
     setRentalList([...rentalList, ...updatedRentalList]);
 
-    // 장바구니 초기화
+
     setCart([]);
 
     alert('대여가 완료되었습니다.');

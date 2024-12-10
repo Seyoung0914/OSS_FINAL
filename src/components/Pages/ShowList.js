@@ -44,46 +44,44 @@ const ShowList = ({ cart = [], addToCart = () => {} }) => {
   }, []);
 
   useEffect(() => {
-    const applyFiltersAndSort = () => {
-      let updatedBooks = [...books]; // 불변성 유지
-
-      // 1️⃣ 검색어 필터
-      if (searchKeyword) {
-        updatedBooks = updatedBooks.filter((book) =>
-          book[filterType]?.toLowerCase().includes(searchKeyword.toLowerCase())
-        );
-      }
-
-      // 2️⃣ 대여 가능 여부 필터
-      if (showAvailableOnly) {
-        updatedBooks = updatedBooks.filter((book) => book.loan_available === "대여 가능");
-      }
-
-      // 3️⃣ 언어 필터
-      if (languageFilter !== "ALL") {
-        updatedBooks = updatedBooks.filter(
-          (book) => book.language === languageFilter
-        );
-      }
-
-      // 4️⃣ 정렬 (불변성 유지)
-      if (sortType === "title_asc") {
-        updatedBooks = [...updatedBooks].sort((a, b) =>
-          a.title.localeCompare(b.title, "ko", { sensitivity: "base" })
-        );
-      } else if (sortType === "control_number_asc") {
-        updatedBooks = [...updatedBooks].sort((a, b) =>
-          parseInt(a.control_number, 10) - parseInt(b.control_number, 10)
-        );
-      }
-
-      return updatedBooks;
-    };
-
-    const updatedBooks = applyFiltersAndSort();
-    setFilteredBooks(updatedBooks); // 필터된 결과로 상태 업데이트
-    setCurrentPage(1); // 페이지 초기화
+    if (!books || books.length === 0) return;
+  
+    let updatedBooks = books;
+  
+    // 1️⃣ 검색어 필터
+    if (searchKeyword) {
+      updatedBooks = updatedBooks.filter((book) =>
+        book[filterType]?.toLowerCase().includes(searchKeyword.toLowerCase())
+      );
+    }
+  
+    // 2️⃣ 대여 가능 여부 필터
+    if (showAvailableOnly) {
+      updatedBooks = updatedBooks.filter((book) => book.loan_available === "대여 가능");
+    }
+  
+    // 3️⃣ 언어 필터
+    if (languageFilter !== "ALL") {
+      updatedBooks = updatedBooks.filter((book) => book.language === languageFilter);
+    }
+  
+    // 4️⃣ 정렬
+    if (sortType === "title_asc") {
+      updatedBooks = updatedBooks.sort((a, b) =>
+        a.title.localeCompare(b.title, "ko", { sensitivity: "base" })
+      );
+    } else if (sortType === "control_number_asc") {
+      updatedBooks = updatedBooks.sort((a, b) =>
+        parseInt(a.control_number, 10) - parseInt(b.control_number, 10)
+      );
+    } else if (sortType === "publication_year_asc") {
+      updatedBooks = updatedBooks.sort((a, b) => a.publication_year - b.publication_year);
+    }
+  
+    setFilteredBooks([...updatedBooks]);
   }, [books, searchKeyword, filterType, showAvailableOnly, languageFilter, sortType]);
+  
+ 
 
   const displayedBooks = filteredBooks.slice(
     (currentPage - 1) * itemsPerPage,
