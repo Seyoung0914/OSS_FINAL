@@ -30,6 +30,13 @@ const ShowList = ({ cart = [], addToCart = () => {}, rentalList = [] }) => {
           loan_available: book.loan_available === 'Y' ? '대여 가능' : '대여 중', // 상태 표시 변경
         }));
 
+        const updatedBooks = bookArray.map((book) => {
+          if (rentalList.some((rentalBook) => rentalBook.CTRLNO === book.CTRLNO)) {
+            return { ...book, AVAILABLE: '대여 중' };
+          }
+          return book;
+        });
+
         setBooks(bookArray);
         setFilteredBooks(bookArray);
         setLoading(false);
@@ -42,20 +49,6 @@ const ShowList = ({ cart = [], addToCart = () => {}, rentalList = [] }) => {
 
     fetchBooks();
   }, []);
-
-  useEffect(() => {
-    // rentalList가 변경될 때마다 books 갱신
-    if (books.length > 0) {
-      const updatedBooks = books.map((book) => {
-        if (rentalList.some((rentalBook) => rentalBook.CTRLNO === book.CTRLNO)) {
-          return { ...book, AVAILABLE: '대여 중' };
-        }
-        return book;
-      });
-
-      setFilteredBooks(updatedBooks);
-    }
-  }, [rentalList, books]); // rentalList나 books가 변경될 때마다 실행
 
   /*정렬 수정 부분 시작*/
   useEffect(() => {
