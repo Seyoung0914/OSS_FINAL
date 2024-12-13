@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import ShowList from "./Pages/ShowList.js";
-import CartList from "./Pages/CartList.js";
-import Detail from "./Pages/Detail.js";
-import RentalList from "./Pages/RentalList.js";
+import React, { useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import ShowList from './Pages/ShowList.js';
+import CartList from './Pages/CartList.js';
+import Detail from './Pages/Detail.js';
+import RentalList from './Pages/RentalList.js';
 
 const Router = () => {
   const [cart, setCart] = useState([]); // 장바구니 상태
@@ -15,11 +15,12 @@ const Router = () => {
     const updatedRentalList = rentalList.filter((book) => book.control_number !== control_number);
 
     setRentalList(updatedRentalList);
+    alert('도서가 반납되었습니다.'); // #2 대여중 작업 : 반납 알림 추가
 
     // 대여 목록에서 삭제된 도서의 loan_available을 "Y"로 변경하여 "대여 가능"으로 복원
     const updatedBooks = rentalList.map((book) => {
       if (book.control_number === control_number) {
-        return { ...book, loan_available: "Y" }; // 대여 가능으로 복원
+        return { ...book, loan_available: 'Y' }; // 대여 가능으로 복원
       }
       return book;
     });
@@ -45,12 +46,10 @@ const Router = () => {
   const checkout = (cartBooks) => {
     const updatedRentalList = cartBooks.map((book) => ({
       ...book,
-      loan_available: "N", 
+      loan_available: 'N',
     }));
 
-   
     setRentalList([...rentalList, ...updatedRentalList]);
-
 
     setCart([]);
 
@@ -61,22 +60,10 @@ const Router = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Navigate to="/home" replace />} />
-        <Route
-          path="/home"
-          element={<ShowList cart={cart} addToCart={addToCart} rentalList={rentalList} />}
-        />
-        <Route
-          path="/cart"
-          element={<CartList cart={cart} removeFromCart={removeFromCart} checkout={checkout} />}
-        />
-        <Route
-          path="/book/:control_number"
-          element={<Detail cart={cart} addToCart={addToCart} />}
-        />
-        <Route
-          path="/rental"
-          element={<RentalList rentalList={rentalList} returnBook={returnBook} />}
-        />
+        <Route path="/home" element={<ShowList cart={cart} addToCart={addToCart} rentalList={rentalList} />} />
+        <Route path="/cart" element={<CartList cart={cart} removeFromCart={removeFromCart} checkout={checkout} />} />
+        <Route path="/book/:control_number" element={<Detail cart={cart} addToCart={addToCart} />} />
+        <Route path="/rental" element={<RentalList rentalList={rentalList} returnBook={returnBook} />} />
       </Routes>
     </BrowserRouter>
   );
