@@ -44,12 +44,16 @@ const Router = () => {
   };
 
   const checkout = (cartBooks) => {
+    console.log('🛒 장바구니의 도서 목록 (체크아웃 이전):', cartBooks);
+
     const updatedRentalList = cartBooks.map((book) => ({
       ...book,
       loan_available: 'N',
     }));
 
     setRentalList([...rentalList, ...updatedRentalList]);
+
+    console.log('📋 대여 상태가 변경된 도서 목록 (체크아웃 이후):', updatedRentalList);
 
     setCart([]);
 

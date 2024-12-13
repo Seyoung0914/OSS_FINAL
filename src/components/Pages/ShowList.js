@@ -33,7 +33,7 @@ const ShowList = ({ cart = [], addToCart = () => {}, rentalList = [] }) => {
 
         const updatedBooks = bookArray.map((book) => {
           if (rentalList.some((rentalBook) => rentalBook.CTRLNO === book.CTRLNO)) {
-            return { ...book, AVAILABLE: '대여 중' };
+            return { ...book, loan_available: '대여 중' };
           }
           return book;
         });
