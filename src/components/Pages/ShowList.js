@@ -20,6 +20,7 @@ const ShowList = ({ cart = [], addToCart = () => {}, rentalList = [] }) => {
   const apiUrl = 'https://67582f9d60576a194d0f3f84.mockapi.io/book';
 
   useEffect(() => {
+    console.log('ShowList page loaded');
     const fetchBooks = async () => {
       try {
         setLoading(true);
