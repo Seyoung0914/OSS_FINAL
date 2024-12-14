@@ -57,6 +57,9 @@ const ShowList = ({ books, setBooks, cart = [], addToCart = () => {}, loading}) 
 
     setCurrentPage(1);
   }, [books, searchKeyword, filterType, showAvailableOnly, languageFilter, sortType]);
+
+  if (loading) return <p>로딩 중...</p>;
+
   /*정렬 수정 부분 끝*/
 
   const displayedBooks = filteredBooks.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
