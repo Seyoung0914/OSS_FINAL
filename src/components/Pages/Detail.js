@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Detail = () => {
+const Detail = ({ cart = [], addToCart = () => { } }) => {
   const { control_number } = useParams(); 
   const navigate = useNavigate();
   const [bookDetails, setBookDetails] = useState(null);
@@ -18,8 +18,9 @@ const Detail = () => {
         setLoading(true);
         setError(null);
 
-        console.log(" control_number:", control_number); 
+        console.log("📚 control_number:", control_number); 
 
+   
         const response = await axios.get(`${apiUrl}?control_number=${control_number}`);
         const bookData = response.data[0]; 
 
@@ -65,9 +66,7 @@ const Detail = () => {
   return (
     <div className="container">
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "20px" }}>
-        <button className="btn btn-primary" onClick={() => navigate("/cart")} style={{ marginRight: "10px" }}>
-          장바구니 보기
-        </button>
+       
         <button className="btn btn-secondary" onClick={() => navigate("/rental")}>
           대여 리스트 보기
         </button>
@@ -86,6 +85,7 @@ const Detail = () => {
           <p><strong>페이지:</strong> {bookDetails.pages}</p>
           <p><strong>ISBN:</strong> {bookDetails.isbn}</p>
           <p><strong>등록일:</strong> {bookDetails.create_date}</p>
+         
         </div>
       )}
 
