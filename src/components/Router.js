@@ -19,10 +19,10 @@ const Router = () => {
           ...book,
           loan_available: book.loan_available === 'Y' ? '대여 가능' : '대여 중', 
         }));
-        console.log('📚 API로부터 받은 책 데이터:', bookArray); 
+        console.log('API로부터 받은 책 데이터:', bookArray); 
         setBooks(bookArray);
       } catch (error) {
-        console.error('🚨 API 요청 중 오류 발생:', error);
+        console.error(' API 요청 중 오류 발생:', error);
       } finally {
         setLoading(false);
       }
@@ -44,7 +44,7 @@ const Router = () => {
   };
 
   const checkout = (cartBooks) => {
-    console.log('🛒 장바구니의 도서 목록 (체크아웃 이전):', cartBooks);
+    console.log(' 장바구니의 도서 목록 (체크아웃 이전):', cartBooks);
 
     setBooks((prevBooks) =>
       prevBooks.map((book) =>
