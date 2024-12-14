@@ -20,11 +20,11 @@ const ShowList = ({ cart = [], addToCart = () => {}, rentalList = [] }) => {
   const apiUrl = 'https://67582f9d60576a194d0f3f84.mockapi.io/book';
 
   useEffect(() => {
-    console.log('ShowList page loaded');
     const fetchBooks = async () => {
       try {
         setLoading(true);
         setError(null);
+        console.log('ShowList page loaded');
         const response = await axios.get(`${apiUrl}?limit=100`);
         const bookArray = response.data.map((book) => ({
           ...book,
