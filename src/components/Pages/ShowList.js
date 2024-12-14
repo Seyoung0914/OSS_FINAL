@@ -159,7 +159,10 @@ const ShowList = ({ books, setBooks, cart = [], addToCart = () => {}, loading}) 
                 <button
                   className="btn btn-warning"
                   onClick={() => addToCart(book)}
-                  disabled={cart.some((item) => item.control_number === book.control_number)}
+                  disabled={
+                    cart.some((item) => item.control_number === book.control_number) ||
+                    book.loan_available !== '대여 가능'
+                  }
                   style={{ marginRight: '10px' }}
                 >
                   {cart.some((item) => item.control_number === book.control_number) ? '장바구니에 있음' : '장바구니 추가'}
