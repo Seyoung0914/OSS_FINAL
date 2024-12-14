@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import Router from './router';
+import Router from './components/Router';
 import axios from 'axios';
 
 function App() {
