@@ -72,8 +72,8 @@ const ShowList = ({ books, setBooks, cart = [], addToCart = () => { } }) => {
       <div
         className="header"
         style={{
-          display: 'flex' ,
-          gap: '10px' ,
+          display: 'flex',
+          gap: '10px',
           padding: '10px',
         }}
       >
@@ -81,8 +81,8 @@ const ShowList = ({ books, setBooks, cart = [], addToCart = () => { } }) => {
           src="/pic.png"
           alt="logo"
           style={{
-            width: '3rem', 
-            height: '3rem', 
+            width: '3rem',
+            height: '3rem',
           }}
         />
         <h1 style={{ margin: 0 }}>도서 리스트</h1>
@@ -104,15 +104,15 @@ const ShowList = ({ books, setBooks, cart = [], addToCart = () => { } }) => {
             onChange={(e) => setSearchKeyword(e.target.value)}
           />
           <select onChange={(e) => setFilterType(e.target.value)} value={filterType}>
-            <option value="TITLE">제목</option>
-            <option value="AUTHOR">저자</option>
-            <option value="PUBLER">출판사</option>
+            <option value="title">제목</option>
+            <option value="author">저자</option>
+            <option value="publisher">출판사</option>
           </select>
           <select onChange={(e) => setSortType(e.target.value)} value={sortType} style={{ marginLeft: '10px' }}>
-            <option value="">정렬 없음</option>
-            <option value="TITLE_ASC">책 제목 가나다순</option>
-            <option value="CTRLNO_ASC">자료 코드순</option>
-            <option value="PUBLER_YEAR_ASC">출판 연도순</option>
+            <option value="">기본순</option>
+            <option value="title_asc">책 제목 가나다순</option>
+            <option value="control_number_asc">자료 코드순</option>
+            <option value="publication_year_asc">출판 연도순</option>
           </select>
           <select
             onChange={(e) => setLanguageFilter(e.target.value)}
@@ -120,17 +120,19 @@ const ShowList = ({ books, setBooks, cart = [], addToCart = () => { } }) => {
             style={{ marginLeft: '10px' }}
           >
             <option value="ALL">모든 언어</option>
-            <option value="kor">한국어</option>
-            <option value="eng">영어</option>
+            <option value="한국어">한국어</option>
+            <option value="영어">영어</option>
           </select>
-          <label style={{ alignItems: 'center', gap: '5px', marginLeft: '10px', display: 'flex' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '5px', marginLeft: '10px' }}>
             <input
               type="checkbox"
               checked={showAvailableOnly}
               onChange={(e) => setShowAvailableOnly(e.target.checked)}
+              style={{ transform: 'translateY(2px)' }} 
             />
-            <p> 대여 가능 도서만 보기</p>
+            <p style={{ margin: 0 }}>대여 가능 도서만 보기</p>
           </label>
+
         </div>
         <div>
           <button className="btn btn-primary" onClick={() => navigate('/cart')} style={{ marginRight: '10px' }}>
