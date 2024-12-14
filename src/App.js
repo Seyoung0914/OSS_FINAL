@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter } from 'react-router-dom';
-import Router from './components/Router';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import ShowList from './components/Pages/ShowList.js';
+import CartList from './components/Pages/CartList.js';
+import Detail from './components/Pages/Detail.js';
+import RentalList from './components/Pages/RentalList.js';
 import axios from 'axios';
 
-function App() {
+const App = () => {
   const [books, setBooks] = useState([]); // OpenAPI로 받아온 책 데이터 저장
   const [cart, setCart] = useState([]); // 장바구니 상태
   const [loading, setLoading] = useState(true); // 로딩 상태 추가
@@ -68,18 +71,18 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Router 
-        books={books} 
-        setBooks={setBooks} 
-        cart={cart} 
-        addToCart={addToCart} 
-        removeFromCart={removeFromCart} 
-        checkout={checkout} 
-        returnBook={returnBook} 
-        loading={loading} 
-      />
+      <Routes>
+        <Route path="/" element={<Navigate to="/home" replace />} />
+        <Route
+          path="/home"
+          element={<ShowList books={books} setBooks={setBooks} cart={cart} addToCart={addToCart} loading={loading} />}
+        />
+        <Route path="/cart" element={<CartList cart={cart} removeFromCart={removeFromCart} checkout={checkout} />} />
+        <Route path="/book/:control_number" element={<Detail cart={cart} addToCart={addToCart} />} />
+        <Route path="/rental" element={<RentalList books={books} setBooks={setBooks} />} />
+      </Routes>
     </BrowserRouter>
   );
-}
+};
 
 export default App;
