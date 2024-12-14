@@ -83,10 +83,12 @@ const Detail = ({ cart = [], addToCart = () => { } }) => {
           <p><strong>저자:</strong> {bookDetails.author}</p>
           <p><strong>출판사:</strong> {bookDetails.publisher}</p>
           <p><strong>출판 연도:</strong> {bookDetails.publication_year}</p>
+          <p><strong>청구기호:</strong> {bookDetails.call_number}</p>
           <p><strong>분류기호:</strong> {bookDetails.class_number}</p>
           <p><strong>언어:</strong> {bookDetails.language}</p>
           <p><strong>페이지:</strong> {bookDetails.pages}</p>
           <p><strong>ISBN:</strong> {bookDetails.isbn}</p>
+          <p><strong>등록일:</strong> {bookDetails.create_date}</p>
           <p><strong>대여 가능 여부:</strong> {bookDetails.loan_available}</p>
           <button
             className="btn btn-warning"
@@ -135,7 +137,7 @@ const Detail = ({ cart = [], addToCart = () => { } }) => {
                 </button>
                 <button
                   className="btn btn-info"
-                  onClick={() => navigate(`/book/${book.control_number}`)} // 다시 상세보기로 이동
+                  onClick={() => navigate(`/book/${book.control_number}`)} 
                 >
                   상세보기
                 </button>
