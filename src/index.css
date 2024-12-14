@@ -1,13 +1,181 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
+    'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+.container {
+  font-family: 'Arial', sans-serif;
+  padding: 20px;
+}
+
+h1 {
+  color: #333;
+}
+
+.filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filters input,
+.filters select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.filters button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.filters .btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.filters .btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.book-item {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.book-item div {
+  margin-right: 15px;
+}
+
+.book-item strong {
+  font-size: 18px;
+  color: #333;
+}
+
+.book-item p {
+  color: #666;
+}
+
+.btn {
+  padding: 10px 15px;
+  border-radius: 5px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.btn-warning {
+  background-color: #ffc107;
+  color: #333;
+}
+
+.btn-info {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn:disabled {
+  background-color: #e0e0e0;
+  color: #999;
+  cursor: not-allowed;
+}
+.btn:hover {
+  opacity: 0.8;
+}
+
+span {
+  font-weight: bold;
+}
+
+span[style*='green'] {
+  color: #28a745; /* 대여 가능 */
+}
+
+span[style*='red'] {
+  color: #dc3545; /* 대여 중 */
+}
+/* 전체 페이지네이션 컨테이너 */
+.pagination {
+  display: flex;
+  justify-content: center; /* 가운데 정렬 */
+  align-items: center;
+  margin-top: 20px;
+  gap: 10px; /* 버튼 간격 */
+}
+
+/* 페이지 버튼 기본 스타일 */
+.page-btn {
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f8f9fa;
+  color: #333;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease; /* 부드러운 애니메이션 */
+}
+
+/* Hover 상태 */
+.page-btn:hover {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+/* Active 상태 (현재 페이지) */
+.page-btn.active {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+  border-color: #0056b3;
+}
+
+/* Disabled 버튼 (이전/다음 비활성화 상태) */
+.page-btn:disabled {
+  background-color: #e0e0e0;
+  color: #999;
+  border-color: #ccc;
+  cursor: not-allowed;
+}
+
+.book-actions {
+  display: flex;
+  flex-direction: column; /* 버튼과 상태를 세로 정렬 */
+  align-items: flex-end; /* 오른쪽 정렬 */
+  gap: 10px; /* 간격 설정 */
+  min-width: 150px; /* 버튼 영역 고정 너비 */
+}
+.book-info strong {
+  font-size: 18px;
+  color: #333;
+  white-space: normal; /* 텍스트가 줄바꿈되도록 설정 */
+  word-break: break-word; /* 긴 단어가 있을 경우 자동으로 줄바꿈 */
+  overflow-wrap: break-word; /* 단어가 긴 경우 자동 줄바꿈 */
 }
