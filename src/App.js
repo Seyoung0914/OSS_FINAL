@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ShowList from './components/Pages/ShowList.js';
 import CartList from './components/Pages/CartList.js';
