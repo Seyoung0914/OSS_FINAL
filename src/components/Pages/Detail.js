@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Detail = ({ cart = [], addToCart = () => { } }) => {
+const Detail = () => {
   const { control_number } = useParams(); 
   const navigate = useNavigate();
   const [bookDetails, setBookDetails] = useState(null);
@@ -18,9 +18,8 @@ const Detail = ({ cart = [], addToCart = () => { } }) => {
         setLoading(true);
         setError(null);
 
-        console.log("📚 control_number:", control_number); 
+        console.log(" control_number:", control_number); 
 
-   
         const response = await axios.get(`${apiUrl}?control_number=${control_number}`);
         const bookData = response.data[0]; 
 
@@ -87,17 +86,6 @@ const Detail = ({ cart = [], addToCart = () => { } }) => {
           <p><strong>페이지:</strong> {bookDetails.pages}</p>
           <p><strong>ISBN:</strong> {bookDetails.isbn}</p>
           <p><strong>등록일:</strong> {bookDetails.create_date}</p>
-          <p><strong>대여 가능 여부:</strong> {bookDetails.loan_available}</p>
-          <button
-            className="btn btn-warning"
-            onClick={() => addToCart(bookDetails)}
-            disabled={cart.some((item) => item.control_number === bookDetails.control_number)}
-            style={{ marginTop: "20px" }}
-          >
-            {cart.some((item) => item.control_number === bookDetails.control_number)
-              ? "장바구니에 있음"
-              : "장바구니 추가"}
-          </button>
         </div>
       )}
 
@@ -123,16 +111,6 @@ const Detail = ({ cart = [], addToCart = () => { } }) => {
                 <p>{`${book.author} / ${book.publisher}`}</p>
               </div>
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <button
-                  className="btn btn-warning"
-                  onClick={() => addToCart(book)}
-                  disabled={cart.some((item) => item.control_number === book.control_number)}
-                  style={{ marginBottom: "10px" }}
-                >
-                  {cart.some((item) => item.control_number === book.control_number)
-                    ? "장바구니에 있음"
-                    : "장바구니 추가"}
-                </button>
                 <button
                   className="btn btn-info"
                   onClick={() => navigate(`/book/${book.control_number}`)} 

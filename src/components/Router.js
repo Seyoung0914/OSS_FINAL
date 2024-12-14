@@ -59,15 +59,6 @@ const Router = () => {
     alert('대여가 완료되었습니다.');
   };
 
-  const returnBook = (control_number) => {
-    setBooks((prevBooks) =>
-      prevBooks.map((book) =>
-        book.control_number === control_number
-          ? { ...book, loan_available: '대여 가능' } 
-          : book
-      )
-    );
-  };
 
   return (
     <BrowserRouter>
