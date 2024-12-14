@@ -152,13 +152,15 @@ const ShowList = ({ books, setBooks, cart = [], addToCart = () => { } }) => {
             style={{
               display: "flex",
               justifyContent: "space-between",
-              alignItems: "center",
+              alignItems: "flex-start",
               borderBottom: "1px solid #ccc",
               padding: "10px 0",
             }}
           >
-            <div>
-              <strong>{book.title}</strong>
+            <div style={{ maxWidth: "70%" }}>
+              <strong style={{ display: "block", wordWrap: "break-word", whiteSpace: "normal" }}>
+                {book.title.length > 100 ? `${book.title.slice(0, 100)}\n${book.title.slice(100)}` : book.title}
+              </strong>
               <p>{`${book.author} / ${book.publisher}`}</p>
             </div>
             <div
