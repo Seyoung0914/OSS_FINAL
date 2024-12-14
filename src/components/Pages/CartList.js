@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const CartList = ({ cart = [], removeFromCart = () => {}, checkout = () => {} }) => {
+const CartList = ({ cart = [], removeFromCart = () => { }, checkout = () => { } }) => {
   const navigate = useNavigate();
 
   const handleRemove = (control_number) => {
@@ -13,7 +13,7 @@ const CartList = ({ cart = [], removeFromCart = () => {}, checkout = () => {} })
       alert('장바구니에 도서가 없습니다.');
       return;
     }
-    checkout(cart); 
+    checkout(cart);
     alert('대여가 완료되었습니다.');
     navigate('/home');
   };
@@ -65,13 +65,14 @@ const CartList = ({ cart = [], removeFromCart = () => {}, checkout = () => {} })
               >
                 삭제
               </button>
-              <span
-                style={{
-                  color: book.loan_available === '대여 가능' ? 'green' : 'red',
-                }}
-              >
-                {book.loan_available}
-              </span>
+              <p>
+                {book.loan_available === 'Y' ? (
+                  <span style={{ color: 'green' }}>대여 가능</span>
+                ) : (
+                  <span style={{ color: 'red' }}>대여 중</span>
+                )}
+              </p>
+
             </div>
           </div>
         ))}
