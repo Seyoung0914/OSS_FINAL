@@ -251,10 +251,6 @@ h1 {
   color: #666;
 }
 
-.container .cart-item span {
-  font-weight: bold;
-}
-
 .container .cart-actions {
   display: flex;
   justify-content: flex-end;

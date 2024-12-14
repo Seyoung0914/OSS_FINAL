@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Detail = ({ cart = [], addToCart = () => { } }) => {
-  const { control_number } = useParams(); // URL에서 control_number 추출
+  const { control_number } = useParams(); 
   const navigate = useNavigate();
   const [bookDetails, setBookDetails] = useState(null);
   const [recommendedBooks, setRecommendedBooks] = useState([]);
@@ -18,29 +18,27 @@ const Detail = ({ cart = [], addToCart = () => { } }) => {
         setLoading(true);
         setError(null);
 
-        console.log("📚 control_number:", control_number); // control_number 확인
+        console.log("📚 control_number:", control_number); 
 
-        // API 호출: control_number로 필터링
+   
         const response = await axios.get(`${apiUrl}?control_number=${control_number}`);
-        const bookData = response.data[0]; // 데이터가 배열로 반환되면 첫 번째 요소를 가져옴
+        const bookData = response.data[0]; 
 
         if (!bookData) throw new Error("도서 정보를 찾을 수 없습니다.");
 
-        setBookDetails(bookData); // 상세 정보 상태 업데이트
+        setBookDetails(bookData);
 
-        // 추천 도서 로드
-        const allBooksResponse = await axios.get(apiUrl); // 전체 데이터 가져오기
+        const allBooksResponse = await axios.get(apiUrl);
         const allBooks = allBooksResponse.data;
 
-        // 추천 도서 필터링: 동일한 class_number의 도서를 가져오되, 현재 책은 제외
         const recommended = allBooks
           .filter(
             (book) =>
-              book.class_number?.startsWith(bookData.class_number[0]) && // 같은 class_number의 첫 글자로 필터링
-              book.control_number !== control_number // 현재 책 제외
+              book.class_number?.startsWith(bookData.class_number[0]) && 
+              book.control_number !== control_number 
           )
-          .sort(() => 0.5 - Math.random()) // 랜덤 정렬
-          .slice(0, 3); // 최대 3권만 추천
+          .sort(() => 0.5 - Math.random()) 
+          .slice(0, 3); 
 
         setRecommendedBooks(recommended);
         setLoading(false);
@@ -52,7 +50,7 @@ const Detail = ({ cart = [], addToCart = () => { } }) => {
     };
 
     if (control_number) {
-      fetchBookDetails(); // control_number가 있을 때만 데이터 요청
+      fetchBookDetails(); 
     }
   }, [control_number]);
 

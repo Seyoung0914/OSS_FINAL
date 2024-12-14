@@ -65,14 +65,6 @@ const CartList = ({ cart = [], removeFromCart = () => { }, checkout = () => { } 
               >
                 삭제
               </button>
-              <p>
-                {book.loan_available === 'Y' ? (
-                  <span style={{ color: 'green' }}>대여 가능</span>
-                ) : (
-                  <span style={{ color: 'red' }}>대여 중</span>
-                )}
-              </p>
-
             </div>
           </div>
         ))}
