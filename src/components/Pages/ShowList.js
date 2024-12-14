@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const ShowList = ({ books, setBooks, cart = [], addToCart = () => {}, loading }) => {
+const ShowList = ({ books, setBooks, cart = [], addToCart = () => {} }) => {
   const [filteredBooks, setFilteredBooks] = React.useState([]);
   const [searchKeyword, setSearchKeyword] = React.useState('');
   const [filterType, setFilterType] = React.useState('title');
@@ -13,15 +13,7 @@ const ShowList = ({ books, setBooks, cart = [], addToCart = () => {}, loading })
   const navigate = useNavigate();
   const itemsPerPage = 10;
 
-  if (loading) {
-    return <p>데이터 로딩중...</p>;
-  }
-
-  if (!books || books.length === 0) {
-    return <p>도서 데이터가 없습니다.</p>;
-  }
-
-  /* 정렬 수정 부분 시작 */
+  /*정렬 수정 부분 시작*/
   React.useEffect(() => {
     if (!books || books.length === 0) return;
 
@@ -65,7 +57,7 @@ const ShowList = ({ books, setBooks, cart = [], addToCart = () => {}, loading })
 
     setCurrentPage(1);
   }, [books, searchKeyword, filterType, showAvailableOnly, languageFilter, sortType]);
-  /* 정렬 수정 부분 끝 */
+  /*정렬 수정 부분 끝*/
 
   const displayedBooks = filteredBooks.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
@@ -80,6 +72,7 @@ const ShowList = ({ books, setBooks, cart = [], addToCart = () => {}, loading })
     <div className="container">
       <h1>도서 리스트</h1>
 
+      {/* 오른쪽 상단에 장바구니 리스트 이동, 대여 리스트 이동 버튼 추가 */}
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <button className="btn btn-primary ms-2" onClick={() => navigate('/cart')}>
           장바구니 보기
@@ -115,6 +108,23 @@ const ShowList = ({ books, setBooks, cart = [], addToCart = () => {}, loading })
             <option value="control_number_asc">자료 코드순</option>
             <option value="publication_year_asc">출판 연도순</option>
           </select>
+          <select
+            onChange={(e) => setLanguageFilter(e.target.value)}
+            value={languageFilter}
+            style={{ marginLeft: '10px' }}
+          >
+            <option value="ALL">모든 언어</option>
+            <option value="한국어">한국어</option>
+            <option value="영어">영어</option>
+          </select>
+          <label style={{ marginLeft: '10px' }}>
+            <input
+              type="checkbox"
+              checked={showAvailableOnly}
+              onChange={(e) => setShowAvailableOnly(e.target.checked)}
+            />
+            대여 가능 도서만 보기
+          </label>
         </div>
       </div>
 
@@ -124,26 +134,15 @@ const ShowList = ({ books, setBooks, cart = [], addToCart = () => {}, loading })
             <div>
               <strong>{book.title}</strong>
               <p>{`${book.author} / ${book.publisher}`}</p>
-              <p>
-                {book.loan_available === '대여 가능' ? (
-                  <span style={{ color: 'green' }}>대여 가능</span>
-                ) : (
-                  <span style={{ color: 'red' }}>대여 중</span>
-                )}
-              </p>
             </div>
             <div>
-              <button
-                className="btn btn-warning"
-                onClick={() => addToCart(book)}
-                disabled={cart.some((item) => item.control_number === book.control_number)}
-                style={{ marginBottom: '10px' }}
+              <span
+                style={{
+                  color: book.loan_available === '대여 가능' ? 'green' : 'red',
+                }}
               >
-                {cart.some((item) => item.control_number === book.control_number) ? '장바구니에 있음' : '장바구니 추가'}
-              </button>
-              <button className="btn btn-info" onClick={() => navigate(`/book/${book.control_number}`)}>
-                상세보기
-              </button>
+                {book.loan_available}
+              </span>
             </div>
           </div>
         ))}
