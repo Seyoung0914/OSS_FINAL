@@ -66,7 +66,9 @@ const Detail = ({ cart = [], addToCart = () => { } }) => {
   return (
     <div className="container">
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "20px" }}>
-       
+        <button className="btn btn-primary" onClick={() => navigate("/cart")} style={{ marginRight: "10px" }}>
+          장바구니 보기
+        </button>
         <button className="btn btn-secondary" onClick={() => navigate("/rental")}>
           대여 리스트 보기
         </button>
@@ -85,7 +87,6 @@ const Detail = ({ cart = [], addToCart = () => { } }) => {
           <p><strong>페이지:</strong> {bookDetails.pages}</p>
           <p><strong>ISBN:</strong> {bookDetails.isbn}</p>
           <p><strong>등록일:</strong> {bookDetails.create_date}</p>
-         
         </div>
       )}
 
@@ -111,6 +112,7 @@ const Detail = ({ cart = [], addToCart = () => { } }) => {
                 <p>{`${book.author} / ${book.publisher}`}</p>
               </div>
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        
                 <button
                   className="btn btn-info"
                   onClick={() => navigate(`/book/${book.control_number}`)} 
