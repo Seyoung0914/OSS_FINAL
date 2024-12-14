@@ -20,12 +20,29 @@ code {
   margin-bottom: 20px;
 }
 
+/* 기본 페이지 제목 스타일 */
 h1 {
   color: #333;
-  margin-bottom: 20px;
   padding: 10px;
-  background-color: #faf3e0;
   border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+/* 페이지별 제목 배경색 */
+.home-page h1 {
+  background-color: #f0f8ff; /* 밝은 파랑 (홈 페이지) */
+}
+
+.cart-page h1 {
+  background-color: #fbe7c6; /* 연한 오렌지 (장바구니 페이지) */
+}
+
+.rental-page h1 {
+  background-color: #e6f7e9; /* 연한 초록 (대여 리스트 페이지) */
+}
+
+.detail-page h1 {
+  background-color: #ffe4e6; /* 연한 분홍 (도서 상세 페이지) */
 }
 
 .filters {
