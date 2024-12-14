@@ -179,3 +179,49 @@ span[style*='red'] {
   word-break: break-word; /* 긴 단어가 있을 경우 자동으로 줄바꿈 */
   overflow-wrap: break-word; /* 단어가 긴 경우 자동 줄바꿈 */
 }
+.book-details {
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  background-color: #fafafa;
+}
+
+.book-details p {
+  margin: 5px 0;
+  font-size: 16px;
+  color: #555;
+}
+
+.book-details strong {
+  color: #333;
+  font-size: 18px;
+}
+
+.recommended-books {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* 추천 도서 간격 */
+}
+
+.recommended-book {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+
+.recommended-book strong {
+  font-size: 18px;
+  color: #333;
+}
+
+.recommended-book p {
+  color: #666;
+  margin: 5px 0;
+}
