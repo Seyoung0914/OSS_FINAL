@@ -128,17 +128,49 @@ const ShowList = ({ books, setBooks, cart = [], addToCart = () => {} }) => {
         </div>
       </div>
 
-      <div id="data-list" style={{ marginTop: '20px' }}>
+      <div id="data-list" style={{ marginTop: "20px" }}>
         {displayedBooks.map((book) => (
-          <div key={book.control_number} className="book-item">
+          <div
+            key={book.control_number}
+            className="book-item"
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              borderBottom: "1px solid #ccc",
+              padding: "10px 0",
+            }}
+          >
             <div>
               <strong>{book.title}</strong>
               <p>{`${book.author} / ${book.publisher}`}</p>
             </div>
-            <div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <div style={{ marginBottom: '10px' }}>
+                <button
+                  className="btn btn-warning"
+                  onClick={() => addToCart(book)}
+                  disabled={cart.some((item) => item.control_number === book.control_number)}
+                  style={{ marginRight: '10px' }}
+                >
+                  {cart.some((item) => item.control_number === book.control_number) ? '장바구니에 있음' : '장바구니 추가'}
+                </button>
+                <button
+                  className="btn btn-info"
+                  onClick={() => navigate(`/book/${book.control_number}`)} // control_number로 경로 이동
+                >
+                  상세보기
+                </button>
+              </div>
               <span
                 style={{
-                  color: book.loan_available === '대여 가능' ? 'green' : 'red',
+                  color: book.loan_available === "대여 가능" ? "green" : "red",
                 }}
               >
                 {book.loan_available}
@@ -147,7 +179,7 @@ const ShowList = ({ books, setBooks, cart = [], addToCart = () => {} }) => {
           </div>
         ))}
       </div>
-
+          
       <div className="pagination">
         {Array.from({ length: endPage }, (_, i) => startPage + i).map((pageNumber) => (
           <button
