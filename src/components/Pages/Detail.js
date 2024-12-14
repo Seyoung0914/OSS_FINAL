@@ -1,41 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
-const Detail = ({ cart = [], addToCart = () => {} }) => {
-  const { control_number } = useParams();
+const Detail = ({ books = [], cart = [], addToCart = () => {} }) => {
+  const { control_number } = useParams(); // URL에서 control_number 추출
   const navigate = useNavigate();
   const [bookDetails, setBookDetails] = useState(null);
   const [recommendedBooks, setRecommendedBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const apiUrl = 'https://67582f9d60576a194d0f3f84.mockapi.io/book';
-
   useEffect(() => {
-    const fetchBookDetails = async () => {
+    const fetchBookDetails = () => {
       try {
         setLoading(true);
         setError(null);
 
-        console.log('📚 control_number:', control_number);
+        console.log('📚 control_number:', control_number); // control_number 확인
 
-        const response = await axios.get(`${apiUrl}?control_number=${control_number}`);
-        const bookData = response.data[0];
+        // API 호출 없이 Router에서 받아온 books 데이터 사용
+        const bookData = books.find((book) => book.control_number === control_number);
 
         if (!bookData) throw new Error('도서 정보를 찾을 수 없습니다.');
 
-        setBookDetails(bookData);
+        setBookDetails(bookData); // 상세 정보 상태 업데이트
 
-        const allBooksResponse = await axios.get(apiUrl);
-        const allBooks = allBooksResponse.data;
-
-        const recommended = allBooks
+        // 추천 도서 로드
+        const recommended = books
           .filter(
-            (book) => book.class_number?.startsWith(bookData.class_number[0]) && book.control_number !== control_number
+            (book) =>
+              book.class_number?.startsWith(bookData.class_number[0]) && // 같은 class_number의 첫 글자로 필터링
+              book.control_number !== control_number // 현재 책 제외
           )
-          .sort(() => 0.5 - Math.random())
-          .slice(0, 3);
+          .sort(() => 0.5 - Math.random()) // 랜덤 정렬
+          .slice(0, 3); // 최대 3권만 추천
 
         setRecommendedBooks(recommended);
         setLoading(false);
@@ -46,10 +43,10 @@ const Detail = ({ cart = [], addToCart = () => {} }) => {
       }
     };
 
-    if (control_number) {
-      fetchBookDetails();
+    if (control_number && books.length > 0) {
+      fetchBookDetails(); // control_number와 books 데이터가 있을 때만 데이터 처리
     }
-  }, [control_number]);
+  }, [control_number, books]);
 
   if (loading) return <p>로딩 중...</p>;
   if (error)
@@ -87,9 +84,6 @@ const Detail = ({ cart = [], addToCart = () => {} }) => {
             <strong>출판 연도:</strong> {bookDetails.publication_year}
           </p>
           <p>
-            <strong>청구기호:</strong> {bookDetails.call_number}
-          </p>
-          <p>
             <strong>분류기호:</strong> {bookDetails.class_number}
           </p>
           <p>
@@ -100,9 +94,6 @@ const Detail = ({ cart = [], addToCart = () => {} }) => {
           </p>
           <p>
             <strong>ISBN:</strong> {bookDetails.isbn}
-          </p>
-          <p>
-            <strong>등록일:</strong> {bookDetails.create_date}
           </p>
           <p>
             <strong>대여 가능 여부:</strong> {bookDetails.loan_available}
@@ -152,7 +143,10 @@ const Detail = ({ cart = [], addToCart = () => {} }) => {
                     ? '장바구니에 있음'
                     : '장바구니 추가'}
                 </button>
-                <button className="btn btn-info" onClick={() => navigate(`/book/${book.control_number}`)}>
+                <button
+                  className="btn btn-info"
+                  onClick={() => navigate(`/book/${book.control_number}`)} // 다시 상세보기로 이동
+                >
                   상세보기
                 </button>
               </div>
