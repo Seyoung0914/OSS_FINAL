@@ -57,8 +57,6 @@ const ShowList = ({ books, setBooks, cart = [], addToCart = () => { } }) => {
     setCurrentPage(1);
   }, [books, searchKeyword, filterType, showAvailableOnly, languageFilter, sortType]);
 
-  if (loading) return <p>로딩 중...</p>;
-  
   const displayedBooks = filteredBooks.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const totalPages = Math.ceil(filteredBooks.length / itemsPerPage);

@@ -87,7 +87,7 @@ const Detail = ({ cart = [], addToCart = () => { } }) => {
           <p><strong>페이지:</strong> {bookDetails.pages}</p>
           <p><strong>ISBN:</strong> {bookDetails.isbn}</p>
           <p><strong>등록일:</strong> {bookDetails.create_date}</p>
-     
+          <p><strong>대여 가능 여부:</strong> {bookDetails.loan_available}</p>
           <button
             className="btn btn-warning"
             onClick={() => addToCart(bookDetails)}
