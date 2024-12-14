@@ -7,9 +7,7 @@ const RentalList = ({ books, setBooks }) => {
   const handleReturn = (control_number) => {
     setBooks((prevBooks) =>
       prevBooks.map((book) =>
-        book.control_number === control_number
-          ? { ...book, loan_available: '대여 가능' } // 반납 상태로 변경
-          : book
+        book.control_number === control_number ? { ...book, loan_available: '대여 가능' } : book
       )
     );
   };
@@ -48,13 +46,6 @@ const RentalList = ({ books, setBooks }) => {
             <div>
               <strong>{book.title}</strong>
               <p>{`${book.author} / ${book.publisher}`}</p>
-              <p>
-                {book.loan_available === '대여 가능' ? (
-                  <span style={{ color: 'green' }}>대여 가능</span>
-                ) : (
-                  <span style={{ color: 'red' }}>대여 중</span>
-                )}
-              </p>
             </div>
             <div
               style={{
