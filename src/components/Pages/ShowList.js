@@ -92,7 +92,7 @@ const ShowList = ({ books, setBooks, cart = [], addToCart = () => { } }) => {
         style={{
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'center',
+          alignItems: 'flex-start',
           gap: '10px',
         }}
       >
@@ -128,7 +128,7 @@ const ShowList = ({ books, setBooks, cart = [], addToCart = () => { } }) => {
               type="checkbox"
               checked={showAvailableOnly}
               onChange={(e) => setShowAvailableOnly(e.target.checked)}
-              style={{ transform: 'translateY(2px)' }} 
+              style={{ transform: 'translateY(2px)' }}
             />
             <p style={{ margin: 0 }}>대여 가능 도서만 보기</p>
           </label>
