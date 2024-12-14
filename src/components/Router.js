@@ -50,7 +50,6 @@ const Router = () => {
       ...book,
       loan_available: 'N',
     }));
-    console.log(`📘 도서 제목: ${book.title}, 변경 후 상태: ${book.loan_available}`);
 
     setRentalList([...rentalList, ...updatedRentalList]);
 
