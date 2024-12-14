@@ -1,3 +1,4 @@
+/* Bootstrap 기본 스타일 유지 */
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
@@ -9,15 +10,19 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
+
+/* 공통 컨테이너 스타일 */
 .container {
   font-family: 'Arial', sans-serif;
   padding: 20px;
 }
 
+/* 헤더 스타일 */
 h1 {
   color: #333;
 }
 
+/* 필터 영역 스타일 */
 .filters {
   display: flex;
   justify-content: space-between;
@@ -53,7 +58,8 @@ h1 {
   color: white;
 }
 
-.book-item {
+/* 도서 아이템 스타일 */
+.container .book-item {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -65,20 +71,21 @@ h1 {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.book-item div {
+.container .book-item div {
   margin-right: 15px;
 }
 
-.book-item strong {
+.container .book-item strong {
   font-size: 18px;
   color: #333;
 }
 
-.book-item p {
+.container .book-item p {
   color: #666;
 }
 
-.btn {
+/* 버튼 스타일 */
+.container .btn {
   padding: 10px 15px;
   border-radius: 5px;
   border: none;
@@ -86,52 +93,59 @@ h1 {
   cursor: pointer;
 }
 
-.btn-warning {
+.container .btn-warning {
   background-color: #ffc107;
   color: #333;
 }
 
-.btn-info {
+.container .btn-info {
   background-color: #17a2b8;
   color: white;
 }
 
-.btn-danger {
+.container .btn-danger {
   background-color: #dc3545;
   color: white;
 }
 
-.btn:disabled {
+.container .btn-success {
+  background-color: #28a745;
+  color: white;
+}
+
+.container .btn:disabled {
   background-color: #e0e0e0;
   color: #999;
   cursor: not-allowed;
 }
-.btn:hover {
+
+.container .btn:hover {
   opacity: 0.8;
 }
 
-span {
+/* 텍스트 스타일 */
+.container span {
   font-weight: bold;
 }
 
-span[style*='green'] {
+.container span[style*='green'] {
   color: #28a745; /* 대여 가능 */
 }
 
-span[style*='red'] {
+.container span[style*='red'] {
   color: #dc3545; /* 대여 중 */
 }
-/* 전체 페이지네이션 컨테이너 */
-.pagination {
+
+/* 페이지네이션 스타일 */
+.container .pagination {
   display: flex;
-  justify-content: center; /* 가운데 정렬 */
+  justify-content: center;
   align-items: center;
   margin-top: 20px;
-  gap: 10px; /* 버튼 간격 */
+  gap: 10px;
 }
 
-/* 페이지 버튼 기본 스타일 */
-.page-btn {
+.container .pagination .page-btn {
   padding: 10px 15px;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -139,47 +153,31 @@ span[style*='red'] {
   color: #333;
   font-size: 14px;
   cursor: pointer;
-  transition: all 0.3s ease; /* 부드러운 애니메이션 */
+  transition: all 0.3s ease;
 }
 
-/* Hover 상태 */
-.page-btn:hover {
+.container .pagination .page-btn:hover {
   background-color: #007bff;
   color: white;
   border-color: #007bff;
 }
 
-/* Active 상태 (현재 페이지) */
-.page-btn.active {
+.container .pagination .page-btn.active {
   background-color: #007bff;
   color: white;
   font-weight: bold;
   border-color: #0056b3;
 }
 
-/* Disabled 버튼 (이전/다음 비활성화 상태) */
-.page-btn:disabled {
+.container .pagination .page-btn:disabled {
   background-color: #e0e0e0;
   color: #999;
   border-color: #ccc;
   cursor: not-allowed;
 }
 
-.book-actions {
-  display: flex;
-  flex-direction: column; /* 버튼과 상태를 세로 정렬 */
-  align-items: flex-end; /* 오른쪽 정렬 */
-  gap: 10px; /* 간격 설정 */
-  min-width: 150px; /* 버튼 영역 고정 너비 */
-}
-.book-info strong {
-  font-size: 18px;
-  color: #333;
-  white-space: normal; /* 텍스트가 줄바꿈되도록 설정 */
-  word-break: break-word; /* 긴 단어가 있을 경우 자동으로 줄바꿈 */
-  overflow-wrap: break-word; /* 단어가 긴 경우 자동 줄바꿈 */
-}
-.book-details {
+/* 디테일 페이지 스타일 */
+.container .book-details {
   padding: 20px;
   border: 1px solid #e0e0e0;
   border-radius: 10px;
@@ -188,24 +186,25 @@ span[style*='red'] {
   background-color: #fafafa;
 }
 
-.book-details p {
+.container .book-details p {
   margin: 5px 0;
   font-size: 16px;
   color: #555;
 }
 
-.book-details strong {
+.container .book-details strong {
   color: #333;
   font-size: 18px;
 }
 
-.recommended-books {
+/* 추천 도서 스타일 */
+.container .recommended-books {
   display: flex;
   flex-direction: column;
-  gap: 15px; /* 추천 도서 간격 */
+  gap: 15px;
 }
 
-.recommended-book {
+.container .recommended-book {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -216,17 +215,18 @@ span[style*='red'] {
   background-color: #ffffff;
 }
 
-.recommended-book strong {
+.container .recommended-book strong {
   font-size: 18px;
   color: #333;
 }
 
-.recommended-book p {
+.container .recommended-book p {
   color: #666;
   margin: 5px 0;
 }
 
-.cart-item {
+/* 장바구니 스타일 */
+.container .cart-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -238,56 +238,31 @@ span[style*='red'] {
   background-color: #ffffff;
 }
 
-.cart-item div {
+.container .cart-item div {
   margin-right: 15px;
 }
 
-.cart-item strong {
+.container .cart-item strong {
   font-size: 18px;
   color: #333;
 }
 
-.cart-item p {
+.container .cart-item p {
   color: #666;
 }
 
-.cart-item span {
+.container .cart-item span {
   font-weight: bold;
 }
 
-.cart-item span[style*='green'] {
-  color: #28a745; /* 대여 가능 */
-}
-
-.cart-item span[style*='red'] {
-  color: #dc3545; /* 대여 불가 */
-}
-
-.cart-actions {
+.container .cart-actions {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
 }
 
-.cart-actions .btn-success {
-  background-color: #28a745;
-  color: white;
-}
-
-.cart-actions .btn-success:hover {
-  opacity: 0.8;
-}
-
-.cart-actions .btn-secondary {
-  background-color: #6c757d;
-  color: white;
-}
-
-.cart-actions .btn-secondary:hover {
-  opacity: 0.8;
-}
-
-.rental-item {
+/* 대여 리스트 스타일 */
+.container .rental-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -299,48 +274,22 @@ span[style*='red'] {
   background-color: #ffffff;
 }
 
-.rental-item div {
+.container .rental-item div {
   margin-right: 15px;
 }
 
-.rental-item strong {
+.container .rental-item strong {
   font-size: 18px;
   color: #333;
 }
 
-.rental-item p {
+.container .rental-item p {
   color: #666;
   margin: 5px 0;
 }
 
-.rental-item span[style*='green'] {
-  color: #28a745; /* 대여 가능 */
-}
-
-.rental-item span[style*='red'] {
-  color: #dc3545; /* 대여 중 */
-}
-
-.rental-actions {
+.container .rental-actions {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-}
-
-.rental-actions .btn-secondary {
-  background-color: #6c757d;
-  color: white;
-}
-
-.rental-actions .btn-secondary:hover {
-  opacity: 0.8;
-}
-
-.btn-danger {
-  background-color: #dc3545;
-  color: white;
-}
-
-.btn-danger:hover {
-  opacity: 0.8;
 }
