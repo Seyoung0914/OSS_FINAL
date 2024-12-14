@@ -8,7 +8,7 @@ import axios from 'axios';
 
 const Router = () => {
   const [books, setBooks] = useState([]); 
-  const [cart, setCart] = useState([]); 
+  const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
@@ -19,12 +19,12 @@ const Router = () => {
           ...book,
           loan_available: book.loan_available === 'Y' ? '대여 가능' : '대여 중', 
         }));
-        console.log('API로부터 받은 책 데이터:', bookArray); 
+        console.log(' API로부터 받은 책 데이터:', bookArray); 
         setBooks(bookArray);
       } catch (error) {
         console.error(' API 요청 중 오류 발생:', error);
       } finally {
-        setLoading(false);
+        setLoading(false); 
       }
     };
 
@@ -44,7 +44,7 @@ const Router = () => {
   };
 
   const checkout = (cartBooks) => {
-    console.log(' 장바구니의 도서 목록 (체크아웃 이전):', cartBooks);
+    console.log('🛒 장바구니의 도서 목록 (체크아웃 이전):', cartBooks);
 
     setBooks((prevBooks) =>
       prevBooks.map((book) =>
@@ -59,6 +59,15 @@ const Router = () => {
     alert('대여가 완료되었습니다.');
   };
 
+  const returnBook = (control_number) => {
+    setBooks((prevBooks) =>
+      prevBooks.map((book) =>
+        book.control_number === control_number
+          ? { ...book, loan_available: '대여 가능' } 
+          : book
+      )
+    );
+  };
 
   return (
     <BrowserRouter>

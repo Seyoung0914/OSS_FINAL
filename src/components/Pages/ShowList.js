@@ -57,7 +57,8 @@ const ShowList = ({ books, setBooks, cart = [], addToCart = () => { } }) => {
     setCurrentPage(1);
   }, [books, searchKeyword, filterType, showAvailableOnly, languageFilter, sortType]);
 
-
+  if (loading) return <p>로딩 중...</p>;
+  
   const displayedBooks = filteredBooks.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const totalPages = Math.ceil(filteredBooks.length / itemsPerPage);
@@ -184,7 +185,7 @@ const ShowList = ({ books, setBooks, cart = [], addToCart = () => { } }) => {
                 </button>
                 <button
                   className="btn btn-info"
-                  onClick={() => navigate(`/book/${book.control_number}`)} // control_number로 경로 이동
+                  onClick={() => navigate(`/book/${book.control_number}`)}
                 >
                   상세보기
                 </button>
