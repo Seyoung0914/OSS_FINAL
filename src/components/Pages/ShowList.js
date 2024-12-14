@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const ShowList = ({ books, setBooks, cart = [], addToCart = () => {} }) => {
+const ShowList = ({ books, setBooks, cart = [], addToCart = () => {}, loading = false}) => {
   const [filteredBooks, setFilteredBooks] = React.useState([]);
   const [searchKeyword, setSearchKeyword] = React.useState('');
   const [filterType, setFilterType] = React.useState('title');
@@ -12,6 +12,8 @@ const ShowList = ({ books, setBooks, cart = [], addToCart = () => {} }) => {
 
   const navigate = useNavigate();
   const itemsPerPage = 10;
+
+  if (loading) return <p>로딩 중...</p>;
 
   /*정렬 수정 부분 시작*/
   React.useEffect(() => {
