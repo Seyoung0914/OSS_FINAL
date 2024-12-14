@@ -216,6 +216,7 @@ const ShowList = ({ cart = [], addToCart = () => {}, rentalList = [] }) => {
                   color: book.loan_available === '대여 가능' ? 'green' : 'red',
                 }}
               >
+                {console.log('📘 Title: ${book.title}, Loan Available: ${book.loan_avilable')}
                 {book.loan_available}
               </span>
             </div>
