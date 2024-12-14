@@ -225,3 +225,122 @@ span[style*='red'] {
   color: #666;
   margin: 5px 0;
 }
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+
+.cart-item div {
+  margin-right: 15px;
+}
+
+.cart-item strong {
+  font-size: 18px;
+  color: #333;
+}
+
+.cart-item p {
+  color: #666;
+}
+
+.cart-item span {
+  font-weight: bold;
+}
+
+.cart-item span[style*='green'] {
+  color: #28a745; /* 대여 가능 */
+}
+
+.cart-item span[style*='red'] {
+  color: #dc3545; /* 대여 불가 */
+}
+
+.cart-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.cart-actions .btn-success {
+  background-color: #28a745;
+  color: white;
+}
+
+.cart-actions .btn-success:hover {
+  opacity: 0.8;
+}
+
+.cart-actions .btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.cart-actions .btn-secondary:hover {
+  opacity: 0.8;
+}
+
+.rental-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+
+.rental-item div {
+  margin-right: 15px;
+}
+
+.rental-item strong {
+  font-size: 18px;
+  color: #333;
+}
+
+.rental-item p {
+  color: #666;
+  margin: 5px 0;
+}
+
+.rental-item span[style*='green'] {
+  color: #28a745; /* 대여 가능 */
+}
+
+.rental-item span[style*='red'] {
+  color: #dc3545; /* 대여 중 */
+}
+
+.rental-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.rental-actions .btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.rental-actions .btn-secondary:hover {
+  opacity: 0.8;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-danger:hover {
+  opacity: 0.8;
+}
