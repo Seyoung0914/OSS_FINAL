@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const ShowList = ({ books, setBooks, cart = [], addToCart = () => {}, loading = false}) => {
+const ShowList = ({ books, setBooks, cart = [], addToCart = () => {}, loading}) => {
   const [filteredBooks, setFilteredBooks] = React.useState([]);
   const [searchKeyword, setSearchKeyword] = React.useState('');
   const [filterType, setFilterType] = React.useState('title');
