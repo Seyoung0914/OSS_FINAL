@@ -9,6 +9,7 @@ import axios from 'axios';
 const Router = () => {
   const [books, setBooks] = useState([]); // OpenAPI로 받아온 책 데이터 저장
   const [cart, setCart] = useState([]); // 장바구니 상태
+  const [loading, setLoading] = useState(true); // 로딩 상태 추가
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -22,6 +23,8 @@ const Router = () => {
         setBooks(bookArray);
       } catch (error) {
         console.error('🚨 API 요청 중 오류 발생:', error);
+      } finally {
+        setLoading(false); // 로딩 완료 후 상태 변경
       }
     };
 
@@ -72,7 +75,7 @@ const Router = () => {
         <Route path="/" element={<Navigate to="/home" replace />} />
         <Route
           path="/home"
-          element={<ShowList books={books} setBooks={setBooks} cart={cart} addToCart={addToCart} />}
+          element={<ShowList books={books} setBooks={setBooks} cart={cart} addToCart={addToCart} loading={loading} />}
         />
         <Route path="/cart" element={<CartList cart={cart} removeFromCart={removeFromCart} checkout={checkout} />} />
         <Route path="/book/:control_number" element={<Detail cart={cart} addToCart={addToCart} />} />
