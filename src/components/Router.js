@@ -1,35 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ShowList from './Pages/ShowList.js';
 import CartList from './Pages/CartList.js';
 import Detail from './Pages/Detail.js';
 import RentalList from './Pages/RentalList.js';
+import axios from 'axios';
 
 const Router = () => {
+  const [books, setBooks] = useState([]); // OpenAPI로 받아온 책 데이터 저장
   const [cart, setCart] = useState([]); // 장바구니 상태
-  const [rentalList, setRentalList] = useState([]); // 대여 목록 상태
 
-  const returnBook = (control_number) => {
-    // 반납 시 대여 목록에서 해당 도서를 삭제하고,
-    // 그 도서의 loan_available을 "Y"로 바꿔서 "대여 가능" 상태로 설정
-    const updatedRentalList = rentalList.filter((book) => book.control_number !== control_number);
-
-    setRentalList(updatedRentalList);
-    alert('도서가 반납되었습니다.'); // #2 대여중 작업 : 반납 알림 추가
-
-    // 대여 목록에서 삭제된 도서의 loan_available을 "Y"로 변경하여 "대여 가능"으로 복원
-    const updatedBooks = rentalList.map((book) => {
-      if (book.control_number === control_number) {
-        return { ...book, loan_available: 'Y' }; // 대여 가능으로 복원
+  useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        const response = await axios.get('https://67582f9d60576a194d0f3f84.mockapi.io/book');
+        const bookArray = response.data.map((book) => ({
+          ...book,
+          loan_available: book.loan_available === 'Y' ? '대여 가능' : '대여 중', // 상태 표시 변경
+        }));
+        console.log('📚 API로부터 받은 책 데이터:', bookArray); // 디버깅용 console.log
+        setBooks(bookArray);
+      } catch (error) {
+        console.error('🚨 API 요청 중 오류 발생:', error);
       }
-      return book;
-    });
+    };
 
-    // 새로운 상태를 반영
-    setRentalList(updatedBooks);
-
-    alert('도서가 반납되었습니다.');
-  };
+    fetchBooks();
+  }, []);
 
   const addToCart = (book) => {
     if (!cart.some((item) => item.control_number === book.control_number)) {
@@ -46,28 +43,40 @@ const Router = () => {
   const checkout = (cartBooks) => {
     console.log('🛒 장바구니의 도서 목록 (체크아웃 이전):', cartBooks);
 
-    const updatedRentalList = cartBooks.map((book) => ({
-      ...book,
-      loan_available: 'N',
-    }));
-
-    setRentalList([...rentalList, ...updatedRentalList]);
-
-    console.log('📋 대여 상태가 변경된 도서 목록 (체크아웃 이후):', updatedRentalList);
+    setBooks((prevBooks) =>
+      prevBooks.map((book) =>
+        cartBooks.some((cartBook) => cartBook.control_number === book.control_number)
+          ? { ...book, loan_available: '대여 중' } // 대여 중으로 변경
+          : book
+      )
+    );
 
     setCart([]);
 
     alert('대여가 완료되었습니다.');
   };
 
+  const returnBook = (control_number) => {
+    setBooks((prevBooks) =>
+      prevBooks.map((book) =>
+        book.control_number === control_number
+          ? { ...book, loan_available: '대여 가능' } // 대여 가능으로 복원
+          : book
+      )
+    );
+  };
+
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Navigate to="/home" replace />} />
-        <Route path="/home" element={<ShowList cart={cart} addToCart={addToCart} rentalList={rentalList} />} />
+        <Route
+          path="/home"
+          element={<ShowList books={books} setBooks={setBooks} cart={cart} addToCart={addToCart} />}
+        />
         <Route path="/cart" element={<CartList cart={cart} removeFromCart={removeFromCart} checkout={checkout} />} />
         <Route path="/book/:control_number" element={<Detail cart={cart} addToCart={addToCart} />} />
-        <Route path="/rental" element={<RentalList rentalList={rentalList} returnBook={returnBook} />} />
+        <Route path="/rental" element={<RentalList books={books} setBooks={setBooks} />} />
       </Routes>
     </BrowserRouter>
   );

@@ -1,14 +1,22 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const RentalList = ({ rentalList = [], returnBook }) => {
+const RentalList = ({ books, setBooks }) => {
   const navigate = useNavigate();
 
   const handleReturn = (control_number) => {
-    returnBook(control_number); // 반납 함수 호출
+    setBooks((prevBooks) =>
+      prevBooks.map((book) =>
+        book.control_number === control_number
+          ? { ...book, loan_available: '대여 가능' } // 반납 상태로 변경
+          : book
+      )
+    );
   };
 
-  if (rentalList.length === 0) {
+  const rentedBooks = books.filter((book) => book.loan_available === '대여 중');
+
+  if (rentedBooks.length === 0) {
     return (
       <div className="container">
         <h1>대여 리스트</h1>
@@ -25,7 +33,7 @@ const RentalList = ({ rentalList = [], returnBook }) => {
       <h1>대여 리스트</h1>
 
       <div id="rental-list" style={{ marginTop: '20px' }}>
-        {rentalList.map((book) => (
+        {rentedBooks.map((book) => (
           <div
             key={book.control_number}
             className="rental-item"
@@ -41,7 +49,7 @@ const RentalList = ({ rentalList = [], returnBook }) => {
               <strong>{book.title}</strong>
               <p>{`${book.author} / ${book.publisher}`}</p>
               <p>
-                {book.loan_available ? (
+                {book.loan_available === '대여 가능' ? (
                   <span style={{ color: 'green' }}>대여 가능</span>
                 ) : (
                   <span style={{ color: 'red' }}>대여 중</span>
@@ -55,7 +63,7 @@ const RentalList = ({ rentalList = [], returnBook }) => {
                 alignItems: 'center',
               }}
             >
-              {book.loan_available ? (
+              {book.loan_available === '대여 중' ? (
                 <button
                   className="btn btn-danger"
                   onClick={() => handleReturn(book.control_number)}
@@ -64,7 +72,7 @@ const RentalList = ({ rentalList = [], returnBook }) => {
                   반납하기
                 </button>
               ) : (
-                <p>대여 중</p>
+                <p>대여 가능</p>
               )}
             </div>
           </div>

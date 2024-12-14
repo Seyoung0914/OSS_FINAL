@@ -1,58 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const ShowList = ({ cart = [], addToCart = () => {}, rentalList = [] }) => {
-  const [books, setBooks] = useState([]);
-  const [filteredBooks, setFilteredBooks] = useState([]);
-  const [searchKeyword, setSearchKeyword] = useState('');
-  const [filterType, setFilterType] = useState('title');
-  const [sortType, setSortType] = useState('');
-  const [languageFilter, setLanguageFilter] = useState('ALL');
-  const [showAvailableOnly, setShowAvailableOnly] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const ShowList = ({ books, setBooks, cart = [], addToCart = () => {} }) => {
+  const [filteredBooks, setFilteredBooks] = React.useState([]);
+  const [searchKeyword, setSearchKeyword] = React.useState('');
+  const [filterType, setFilterType] = React.useState('title');
+  const [sortType, setSortType] = React.useState('');
+  const [languageFilter, setLanguageFilter] = React.useState('ALL');
+  const [showAvailableOnly, setShowAvailableOnly] = React.useState(false);
+  const [currentPage, setCurrentPage] = React.useState(1);
 
   const navigate = useNavigate();
   const itemsPerPage = 10;
 
-  const apiUrl = 'https://67582f9d60576a194d0f3f84.mockapi.io/book';
-
-  useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        console.log('ShowList page loaded');
-        const response = await axios.get(`${apiUrl}?limit=100`);
-        const bookArray = response.data.map((book) => ({
-          ...book,
-          loan_available: book.loan_available === 'Y' ? '대여 가능' : '대여 중', // 상태 표시 변경
-        }));
-
-        const updatedBooks = bookArray.map((book) => {
-          if (rentalList.some((rentalBook) => rentalBook.CTRLNO === book.CTRLNO)) {
-            return { ...book, loan_available: '대여 중' };
-          }
-          return book;
-        });
-
-        setBooks(bookArray);
-        setFilteredBooks(bookArray);
-        setLoading(false);
-      } catch (err) {
-        console.error('Error fetching data:', err);
-        setError('데이터를 가져오는데 실패했습니다. 페이지를 다시 열어주세요.');
-        setLoading(false);
-      }
-    };
-
-    fetchBooks();
-  }, []);
-
   /*정렬 수정 부분 시작*/
-  useEffect(() => {
+  React.useEffect(() => {
     if (!books || books.length === 0) return;
 
     let updatedBooks = [...books];
@@ -105,9 +67,6 @@ const ShowList = ({ cart = [], addToCart = () => {}, rentalList = [] }) => {
 
   const startPage = 1;
   const endPage = totalPages;
-
-  if (loading) return <p>데이터를 불러오는 중입니다...</p>;
-  if (error) return <p>오류 발생: {error}</p>;
 
   return (
     <div className="container">
@@ -171,52 +130,17 @@ const ShowList = ({ cart = [], addToCart = () => {}, rentalList = [] }) => {
 
       <div id="data-list" style={{ marginTop: '20px' }}>
         {displayedBooks.map((book) => (
-          <div
-            key={book.control_number}
-            className="book-item"
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              borderBottom: '1px solid #ccc',
-              padding: '10px 0',
-            }}
-          >
+          <div key={book.control_number} className="book-item">
             <div>
               <strong>{book.title}</strong>
               <p>{`${book.author} / ${book.publisher}`}</p>
             </div>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-              }}
-            >
-              <div style={{ marginBottom: '10px' }}>
-                <button
-                  className="btn btn-warning"
-                  onClick={() => addToCart(book)}
-                  disabled={cart.some((item) => item.control_number === book.control_number)}
-                  style={{ marginRight: '10px' }}
-                >
-                  {cart.some((item) => item.control_number === book.control_number)
-                    ? '장바구니에 있음'
-                    : '장바구니 추가'}
-                </button>
-                <button
-                  className="btn btn-info"
-                  onClick={() => navigate(`/book/${book.control_number}`)} // control_number로 경로 이동
-                >
-                  상세보기
-                </button>
-              </div>
+            <div>
               <span
                 style={{
                   color: book.loan_available === '대여 가능' ? 'green' : 'red',
                 }}
               >
-                {console.log(`📘 Title: ${book.title}, Loan Available: ${book.loan_available}`)}
                 {book.loan_available}
               </span>
             </div>
@@ -232,8 +156,8 @@ const ShowList = ({ cart = [], addToCart = () => {}, rentalList = [] }) => {
             onClick={() => changePage(pageNumber)}
             style={{
               marginRight: '5px',
-              backgroundColor: currentPage === pageNumber ? '#007bff' : '', // 선택된 페이지는 파란색으로 표시
-              opacity: currentPage === pageNumber ? 1 : 0.7, // 선택된 페이지만 투명도 1
+              backgroundColor: currentPage === pageNumber ? '#007bff' : '',
+              opacity: currentPage === pageNumber ? 1 : 0.7,
             }}
           >
             {pageNumber}
