@@ -13,8 +13,6 @@ const ShowList = ({ books, setBooks, cart = [], addToCart = () => {}, loading = 
   const navigate = useNavigate();
   const itemsPerPage = 10;
 
-  if (loading) return <p>로딩 중...</p>;
-
   /*정렬 수정 부분 시작*/
   React.useEffect(() => {
     if (!books || books.length === 0) return;
